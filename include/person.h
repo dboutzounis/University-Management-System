@@ -10,8 +10,9 @@ class Person {
 private:
     string fname;
     string lname;
-    int age;
+    int day, month, year;
     char gender;
+    string nationality;
     string email;
     string phone;
     string id;
@@ -19,25 +20,21 @@ private:
 
 public:
     Person();
-    Person(string fname, string lname, int age, char gender, string email, string phone, string id);
+    Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id);
     ~Person();
     friend ostream &operator<<(ostream &str, Person &obj);
     friend istream &operator>>(istream &str, Person &obj);
     string getFname() const;
     string getLname() const;
-    int getAge() const;
+    string getBirthDate() const;
     string getGender() const;
+    string getNationality() const;
     string getEmail() const;
     string getPhone() const;
     string getId() const;
     static int getCount();
-    void setFname(string fname);
-    void setLname(string lname);
-    void setAge(int age);
-    void setGender(char gender);
     void setEmail(string email);
     void setPhone(string phone);
-    void setId(string id);
 };
 
 #endif

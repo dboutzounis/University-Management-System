@@ -5,11 +5,11 @@ using namespace std;
 
 int Person::count = 0;
 
-Person::Person() : fname(""), lname(""), age(0), gender('\0'), email(""), phone(""), id("") {
+Person::Person() : fname(""), lname(""), day(0), month(0), year(0), gender('\0'), nationality(""), email(""), phone(""), id("") {
     count++;
 }
 
-Person::Person(string fname, string lname, int age, char gender, string email, string phone, string id) : fname(fname), lname(lname), age(age), gender(gender), email(email), phone(phone), id(id) {
+Person::Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id(id) {
     count++;
 }
 
@@ -19,7 +19,7 @@ Person::~Person() {
 
 ostream &operator<<(ostream &str, Person &obj) {
     str << "Full name: " << obj.fname << " " << obj.lname << endl;
-    str << "Age: " << obj.age << endl;
+    str << "Birth Date: " << obj.day << "/" << obj.month << "/" << obj.year << endl;
     if (obj.gender == 'M' || obj.gender == 'm') {
         str << "Gender: Male" << endl;
     } else if (obj.gender == 'F' || obj.gender == 'f') {
@@ -27,6 +27,7 @@ ostream &operator<<(ostream &str, Person &obj) {
     } else {
         str << "Gender: Other" << endl;
     }
+    str << "Nationality: " << obj.nationality << endl;
     str << "E-mail: " << obj.email << endl;
     str << "Phone number: " << obj.phone << endl;
     str << "Academic ID: " << obj.id << endl;
@@ -39,10 +40,17 @@ istream &operator>>(istream &str, Person &obj) {
     str >> obj.fname;
     cout << "Input your last name: ";
     str >> obj.lname;
-    cout << "Input your age: ";
-    str >> obj.age;
-    cout << "Input your gender: ";
+    cout << "Input your birth date: " << endl;
+    cout << "Day: ";
+    str >> obj.day;
+    cout << "Month: ";
+    str >> obj.month;
+    cout << "Year: ";
+    str >> obj.year;
+    cout << "Input your gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
     str >> obj.gender;
+    cout << "Input your nationality: ";
+    str >> obj.nationality;
     cout << "Input your e-mail: ";
     str >> obj.email;
     cout << "Input your phone number: ";
@@ -61,8 +69,9 @@ string Person::getLname() const {
     return lname;
 }
 
-int Person::getAge() const {
-    return age;
+string Person::getBirthDate() const {
+    string str = to_string(day) + "/" + to_string(month) + "/" + to_string(year);
+    return str;
 }
 
 string Person::getGender() const {
@@ -71,8 +80,12 @@ string Person::getGender() const {
     } else if (gender == 'F' || gender == 'f') {
         return "Female";
     } else {
-        return "Unknown";
+        return "Other";
     }
+}
+
+string Person::getNationality() const {
+    return nationality;
 }
 
 string Person::getEmail() const {
@@ -91,30 +104,10 @@ int Person::getCount() {
     return count;
 }
 
-void Person::setFname(string fname) {
-    this->fname = fname;
-}
-
-void Person::setLname(string lname) {
-    this->lname = lname;
-}
-
-void Person::setAge(int age) {
-    this->age = age;
-}
-
-void Person::setGender(char gender) {
-    this->gender = gender;
-}
-
 void Person::setEmail(string email) {
     this->email = email;
 }
 
 void Person::setPhone(string phone) {
     this->phone = phone;
-}
-
-void Person::setId(string id) {
-    this->id = id;
 }
