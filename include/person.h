@@ -6,6 +6,7 @@
 #include <string>
 using namespace std;
 
+// Definition of Person Class
 class Person {
 private:
     string fname;
@@ -19,22 +20,62 @@ private:
     static int count;
 
 public:
+    // Constructor
     Person();
+    // Constructor with parameters
     Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id);
+    // Destructor
     ~Person();
+    // Output stream operator overloading
     friend ostream &operator<<(ostream &str, Person &obj);
+    // Input stream operator overloading
     friend istream &operator>>(istream &str, Person &obj);
-    string getFname() const;
-    string getLname() const;
-    string getBirthDate() const;
-    string getGender() const;
-    string getNationality() const;
-    string getEmail() const;
-    string getPhone() const;
-    string getId() const;
-    static int getCount();
-    void setEmail(string email);
-    void setPhone(string phone);
+
+    /* Other Functions */
+
+    inline string getFname() const {
+        return fname;
+    }
+
+    inline string getLname() const {
+        return lname;
+    }
+
+    inline string getBirthDate() const {
+        return to_string(day) + "/" + to_string(month) + "/" + to_string(year);
+    }
+
+    inline string getGender() const {
+        if (gender == 'M' || gender == 'm')
+            return "Male";
+        else if (gender == 'F' || gender == 'f')
+            return "Female";
+
+        return "Other";
+    }
+
+    inline string getNationality() const {
+        return nationality;
+    }
+
+    inline string getEmail() const {
+        return email;
+    }
+
+    inline string getPhone() const {
+        return phone;
+    }
+
+    inline string getId() const {
+        return id;
+    }
+
+    inline static int getCount() {
+        return count;
+    }
+
+    // Allowing Secretary class to access the private members of Person Class (friend class)
+    friend class Secretary;
 };
 
 #endif

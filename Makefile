@@ -14,7 +14,7 @@ LDFLAGS += -lm
 # set the name of the executable file to compile here
 PROGRAM = main
 
-OBJS = ./src/main.o ./src/person.o
+OBJS = ./src/main.o ./src/person.o ./src/secretary.o
 
 $(PROGRAM): $(OBJS)
 	$(CC) $(CXXFLAGS) $(OBJS) $(LDFLAGS) -o $(PROGRAM)
