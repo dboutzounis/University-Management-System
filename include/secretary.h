@@ -48,6 +48,8 @@ public:
     bool insert(const Person &person);
     // Remove Person from the map
     bool remove(string id);
+    // Unidata map size
+    int count();
 
     /* Other Functions */
 

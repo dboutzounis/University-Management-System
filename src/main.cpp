@@ -23,15 +23,16 @@ int main(void) {
         cout << "4.Remove Person" << endl;
         cout << "5.Copy Department" << endl;
         cout << "6.Display Department" << endl;
-        cout << "7.Exit" << endl;
+        cout << "7.Department Size" << endl;
+        cout << "8.Exit" << endl;
 
         // Checking if user gave valid input
         do {
             cout << "> Enter mode: ";
             cin >> mode;
-            if (mode[0] < '1' || mode[0] > '7' || mode.length() != 1)
+            if (mode[0] < '1' || mode[0] > '8' || mode.length() != 1)
                 cout << "Invalid input, try again." << endl;
-        } while (mode[0] < '1' || mode[0] > '7' || mode.length() != 1);
+        } while (mode[0] < '1' || mode[0] > '8' || mode.length() != 1);
 
         switch (mode[0]) {
         case '1':
@@ -80,6 +81,14 @@ int main(void) {
 
         case '6':
             cout << secretary;
+            break;
+
+        case '7':
+            if (secretary.count() == 1)
+                cout << "The " << secretary.getDepartment() << " has " << secretary.count() << " person." << endl;
+            else
+                cout << "The " << secretary.getDepartment() << " has " << secretary.count() << " people." << endl;
+            cout << endl;
             break;
 
         default:

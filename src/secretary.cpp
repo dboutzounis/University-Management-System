@@ -155,3 +155,8 @@ bool Secretary::remove(string id) {
 
     return false;
 }
+
+// Unidata map size
+int Secretary::count() {
+    return unidata.size();
+}
