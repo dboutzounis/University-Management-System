@@ -44,6 +44,8 @@ public:
     void displayPerson(string id);
     // Search Person in the map
     bool search(string id);
+    // Insert Person in the map
+    bool insert(const Person &person);
     // Remove Person from the map
     bool remove(string id);
 

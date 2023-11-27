@@ -60,10 +60,12 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
 
 // Overloading operator+= to add a new Person to the map
 Secretary Secretary::operator+=(const Person &person) {
-    // Allocating memory for new Person
-    Person *p = createPerson(person.fname, person.lname, person.day, person.month, person.year, person.gender, person.nationality, person.email, person.phone, person.id);
-    // Inserting the new Person to the unidata map
-    unidata.insert(pair<string, Person *>(p->id, p));
+    if (!search(person.id)) {
+        // Allocating memory for new Person
+        Person *p = createPerson(person.fname, person.lname, person.day, person.month, person.year, person.gender, person.nationality, person.email, person.phone, person.id);
+        // Inserting the new Person to the unidata map
+        unidata.insert(pair<string, Person *>(p->id, p));
+    }
 
     return *this;
 }
@@ -83,6 +85,7 @@ Secretary Secretary::operator-=(const Person &person) {
 ostream &operator<<(ostream &str, Secretary &obj) {
     str << endl;
     str << "Department " << obj.department << " data:" << endl;
+    str << endl;
 
     map<string, Person *>::iterator iter;
     int c = 0;
@@ -123,6 +126,19 @@ bool Secretary::search(string id) {
     map<string, Person *>::iterator iter;
     iter = unidata.find(id);
     if (iter != unidata.end()) {
+        return true;
+    }
+
+    return false;
+}
+
+// Inserting a Person in the map
+bool Secretary::insert(const Person &person) {
+    if (!search(person.id)) {
+        // Allocating memory for new Person
+        Person *p = createPerson(person.fname, person.lname, person.day, person.month, person.year, person.gender, person.nationality, person.email, person.phone, person.id);
+        // Inserting the new Person to the unidata map
+        unidata.insert(pair<string, Person *>(p->id, p));
         return true;
     }
 

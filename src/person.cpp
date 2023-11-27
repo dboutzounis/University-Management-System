@@ -39,6 +39,23 @@ ostream &operator<<(ostream &str, Person &obj) {
     return str;
 }
 
+bool isLeapYear(int year) {
+    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+bool isValidDate(int day, int month, int year) {
+    if (year < 0 || month < 1 || month > 12 || day < 1)
+        return false;
+
+    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Adjust February for leap years
+    if (month == 2 && isLeapYear(year))
+        daysInMonth[1] = 29;
+
+    return day <= daysInMonth[month - 1];
+}
+
 // Passing Person data to the input stream (read)
 istream &operator>>(istream &str, Person &obj) {
     cout << "Input your first name: ";
@@ -46,12 +63,16 @@ istream &operator>>(istream &str, Person &obj) {
     cout << "Input your last name: ";
     str >> obj.lname;
     cout << "Input your birth date: " << endl;
-    cout << "Day: ";
-    str >> obj.day;
-    cout << "Month: ";
-    str >> obj.month;
-    cout << "Year: ";
-    str >> obj.year;
+    do {
+        cout << "Day: ";
+        str >> obj.day;
+        cout << "Month: ";
+        str >> obj.month;
+        cout << "Year: ";
+        str >> obj.year;
+        if (!isValidDate(obj.day, obj.month, obj.year))
+            cout << "Invalid date, try again." << endl;
+    } while (!isValidDate(obj.day, obj.month, obj.year));
     cout << "Input your gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
     str >> obj.gender;
     cout << "Input your nationality: ";
