@@ -9,6 +9,9 @@ using namespace std;
 // Definition of Person Class
 class Person {
 private:
+    static int count;
+
+protected:
     string fname;
     string lname;
     int day, month, year;
@@ -17,7 +20,6 @@ private:
     string email;
     string phone;
     string id;
-    static int count;
 
 public:
     // Constructor
