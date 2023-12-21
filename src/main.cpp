@@ -5,12 +5,15 @@
 using namespace std;
 
 int main(void) {
-    Person p;
+    Student p;
     string department, mode, id;
+    int yearsOfStudy;
     cout << "Enter the name of the department: ";
     getline(cin, department);
     cout << endl;
-    Secretary secretary(department), copiedSecretary;
+    cout << "Enter how many years of study the department has: ";
+    cin >> yearsOfStudy;
+    Secretary secretary(department, yearsOfStudy), copiedSecretary;
     cout << "---WELCOME TO THE SECRETARY OF " << secretary.getDepartment() << "!---" << endl
          << endl;
 

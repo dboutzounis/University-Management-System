@@ -1,4 +1,5 @@
 #include "../include/person.h"
+#include "../include/extrafuncs.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -21,39 +22,26 @@ Person::~Person() {
     count--;
 }
 
-// Passing Person data to the output stream (display)
-ostream &operator<<(ostream &str, Person &obj) {
-    str << "Full name: " << obj.fname << " " << obj.lname << endl;
-    str << "Birth Date: " << obj.day << "/" << obj.month << "/" << obj.year << endl;
-    if (obj.gender == 'M' || obj.gender == 'm')
+// Helper print function for overloading << operator
+void Person::print(ostream &str) const {
+    str << "Full name: " << this->fname << " " << this->lname << endl;
+    str << "Birth Date: " << this->day << "/" << this->month << "/" << this->year << endl;
+    if (this->gender == 'M' || this->gender == 'm')
         str << "Gender: Male" << endl;
-    else if (obj.gender == 'F' || obj.gender == 'f')
+    else if (this->gender == 'F' || this->gender == 'f')
         str << "Gender: Female" << endl;
     else
         str << "Gender: Other" << endl;
-    str << "Nationality: " << obj.nationality << endl;
-    str << "E-mail: " << obj.email << endl;
-    str << "Phone number: " << obj.phone << endl;
-    str << "ID: " << obj.id << endl;
+    str << "Nationality: " << this->nationality << endl;
+    str << "E-mail: " << this->email << endl;
+    str << "Phone number: " << this->phone << endl;
+    str << "ID: " << this->id << endl;
+}
 
+// Passing Person data to the output stream (display)
+ostream &operator<<(ostream &str, Person &obj) {
+    obj.print(str);
     return str;
-}
-
-bool isLeapYear(int year) {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-}
-
-bool isValidDate(int day, int month, int year) {
-    if (year < 0 || month < 1 || month > 12 || day < 1)
-        return false;
-
-    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    // Adjust February for leap years
-    if (month == 2 && isLeapYear(year))
-        daysInMonth[1] = 29;
-
-    return day <= daysInMonth[month - 1];
 }
 
 // Passing Person data to the input stream (read)

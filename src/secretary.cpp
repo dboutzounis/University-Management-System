@@ -4,10 +4,10 @@
 #include <string>
 
 // Constructing Secretary
-Secretary::Secretary() : department("") {}
+Secretary::Secretary() : department(""), yearsOfStudy(0) {}
 
 // Constructing Secretary using the parameters on the initializer list
-Secretary::Secretary(string department) : department(department) {}
+Secretary::Secretary(string department, int yearsOfStudy) : department(department), yearsOfStudy(yearsOfStudy) {}
 
 // Destructing the dymically alocated memory of Person objects
 Secretary::~Secretary() {
@@ -16,6 +16,11 @@ Secretary::~Secretary() {
     for (iter = unidata.begin(); iter != unidata.end(); ++iter)
         delete iter->second;
     unidata.clear();
+}
+
+Person *Secretary::allocatePerson(const Person &person) {
+    Person *newP = person.create();
+    return newP;
 }
 
 // Copy Constructing Secretary object
@@ -30,10 +35,11 @@ Secretary::Secretary(const Secretary &old_obj) {
         // Copying old_obj to the current Secretary instance
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
-            Person *person = createPerson(const_iter->second->fname, const_iter->second->lname, const_iter->second->day, const_iter->second->month, const_iter->second->year, const_iter->second->gender, const_iter->second->nationality, const_iter->second->email, const_iter->second->phone, const_iter->second->id);
+            Person *person = allocatePerson(*(const_iter->second));
             unidata.insert(pair<string, Person *>(person->id, person));
         }
         department = old_obj.department;
+        yearsOfStudy = old_obj.yearsOfStudy;
     }
 }
 
@@ -49,10 +55,11 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
         // Copying old_obj to the current Secretary instance
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
-            Person *person = createPerson(const_iter->second->fname, const_iter->second->lname, const_iter->second->day, const_iter->second->month, const_iter->second->year, const_iter->second->gender, const_iter->second->nationality, const_iter->second->email, const_iter->second->phone, const_iter->second->id);
+            Person *person = allocatePerson(*(const_iter->second));
             unidata.insert(pair<string, Person *>(person->id, person));
         }
         department = old_obj.department;
+        yearsOfStudy = old_obj.yearsOfStudy;
     }
 
     return *this;
@@ -62,7 +69,7 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
 Secretary Secretary::operator+=(const Person &person) {
     if (!search(person.id)) {
         // Allocating memory for new Person
-        Person *p = createPerson(person.fname, person.lname, person.day, person.month, person.year, person.gender, person.nationality, person.email, person.phone, person.id);
+        Person *p = allocatePerson(person);
         // Inserting the new Person to the unidata map
         unidata.insert(pair<string, Person *>(p->id, p));
     }
@@ -106,10 +113,22 @@ istream &operator>>(istream &str, Secretary &obj) {
     str >> countPeople;
 
     for (int i = 0; i < countPeople; i++) {
-        cout << "Person " << i + 1 << ":" << endl;
-        Person person;
-        str >> person;
-        obj += person;
+        char type;
+        cout << "Type 's' or 'S' to add a student, else type 'p' or 'P' to add a proffesor: ";
+        do {
+            str >> type;
+            if (type != 's' && type != 'S' && type != 'p' && type != 'P')
+                cout << "Inut wrong, try again: ";
+        } while (type != 's' && type != 'S' && type != 'p' && type != 'P');
+        if (type == 's' || type == 'S') {
+            Student s;
+            str >> s;
+            obj += s;
+        } else {
+            Professor p;
+            str >> p;
+            obj += p;
+        }
         cout << endl;
     }
 
@@ -136,7 +155,7 @@ bool Secretary::search(string id) {
 bool Secretary::insert(const Person &person) {
     if (!search(person.id)) {
         // Allocating memory for new Person
-        Person *p = createPerson(person.fname, person.lname, person.day, person.month, person.year, person.gender, person.nationality, person.email, person.phone, person.id);
+        Person *p = allocatePerson(person);
         // Inserting the new Person to the unidata map
         unidata.insert(pair<string, Person *>(p->id, p));
         return true;

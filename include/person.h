@@ -21,17 +21,23 @@ protected:
     string phone;
     string id;
 
+    // Helper functions
+    virtual Person *create() const = 0;
+    virtual void print(ostream &str) const;
+
 public:
     // Constructor
     Person();
     // Constructor with parameters
     Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id);
     // Destructor
-    ~Person();
+    virtual ~Person();
     // Output stream operator overloading
     friend ostream &operator<<(ostream &str, Person &obj);
     // Input stream operator overloading
     friend istream &operator>>(istream &str, Person &obj);
+    // Display Person
+    virtual void display() const = 0;
 
     /* Other Functions */
 

@@ -2,10 +2,13 @@
 #ifndef SECRETARY_H
 #define SECRETARY_H
 
-#include "person.h"
+#include "course.h"
+#include "professor.h"
+#include "student.h"
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 using namespace std;
 
 // Definition of Secretary Class
@@ -14,18 +17,16 @@ private:
     // Using the map from STL to store pairs of <string, Person *> (string = key, Person * points to instances of the Person object)
     map<string, Person *> unidata;
     string department;
+    int yearsOfStudy;
+    map<int, vector<Course *>> curriculum;
 
-    // Creating dynamically instances of the Person object
-    Person *createPerson(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id) {
-        Person *person = new Person(fname, lname, day, month, year, gender, nationality, email, phone, id);
-        return person;
-    }
+    Person *allocatePerson(const Person &person);
 
 public:
     // Constructor
     Secretary();
     // Constructor with the department name as parameter
-    Secretary(string department);
+    Secretary(string department, int yearsOfStudy);
     // Destructor
     ~Secretary();
     // Copy Constructor
@@ -50,11 +51,19 @@ public:
     bool remove(string id);
     // Unidata map size
     int count();
+    // Student registration to course
+    void registerStudentToCourse(const Course &c, string id);
+    // Course assignment to professor
+    void assignCourseToProfessor(const Course &c, string id);
 
     /* Other Functions */
 
     inline string getDepartment() const {
         return department;
+    }
+
+    inline int getYearsOfStudy() const {
+        return yearsOfStudy;
     }
 
     inline string getFname(string id) const {

@@ -4,11 +4,11 @@
 
 Course::Course() : name(""), ects(0), courseType(false), semester(0) {}
 
-Course::Course(string name, int semester, int ects, bool courseType) : name(name), semester(semester), ects(ects), courseType(courseType) {}
+Course::Course(string name, int semester, int ects, bool courseType) : name(name), ects(ects), courseType(courseType), semester(semester) {}
 
 Course::~Course() {}
 
-void Course::display(vector<Professor> &v) {
+void Course::print(vector<Professor *> &v) {
     for (int i = 0; i < v.size(); i++) {
         cout << v[i] << endl
              << endl;
@@ -27,7 +27,7 @@ ostream &operator<<(ostream &str, Course &obj) {
         str << "Optional course" << endl;
     }
     str << "Teaching staff:" << endl;
-    obj.display(obj.staff);
+    obj.print(obj.staff);
 
     return str;
 }
@@ -43,4 +43,8 @@ istream &operator>>(istream &str, Course &obj) {
     str >> obj.courseType;
 
     return str;
+}
+
+void Course::display() const {
+    cout << this;
 }

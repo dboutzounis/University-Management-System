@@ -15,7 +15,10 @@ private:
     int ects;
     bool courseType;
     int semester;
-    vector<Professor> staff;
+    vector<Professor *> staff;
+
+    // Helper functions
+    void print(vector<Professor *> &v);
 
 public:
     // Constructor
@@ -28,6 +31,8 @@ public:
     friend ostream &operator<<(ostream &str, Course &obj);
     // Input stream operator overloading
     friend istream &operator>>(istream &str, Course &obj);
+    // Display Course
+    void display() const;
 
     /* Other Functions */
 
@@ -49,8 +54,6 @@ public:
         }
         return "Optional";
     }
-
-    void display(vector<Professor> &v);
 
     // Allowing Secretary class to access the private members of Course Class (friend class)
     friend class Secretary;
