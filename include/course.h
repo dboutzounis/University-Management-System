@@ -4,6 +4,7 @@
 
 #include "professor.h"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 using namespace std;
@@ -15,16 +16,20 @@ private:
     int ects;
     bool courseType;
     int semester;
-    vector<Professor *> staff;
+    map<string, Professor *> staff;
+    map<string, Student *> students;
+    map<string, double> grades;
 
     // Helper functions
-    void print(vector<Professor *> &v);
+    void print(map<string, Professor *> &v);
 
 public:
     // Constructor
     Course();
     // Constructor with parameters
     Course(string name, int semester, int ects, bool courseType);
+    // Copy Constructor
+    Course(const Course &old_obj);
     // Destructor
     ~Course();
     // Output stream operator overloading

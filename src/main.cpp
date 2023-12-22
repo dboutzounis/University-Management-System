@@ -56,7 +56,7 @@ int main(void) {
             cin >> id;
             if (secretary.search(id)) {
                 cout << "Found the person: " << endl;
-                secretary.displayPerson(id);
+                secretary.display(id);
             } else {
                 cout << "Person not found." << endl;
             }

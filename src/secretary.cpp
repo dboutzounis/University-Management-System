@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 
 // Constructing Secretary
 Secretary::Secretary() : department(""), yearsOfStudy(0) {}
@@ -132,19 +133,31 @@ istream &operator>>(istream &str, Secretary &obj) {
         cout << endl;
     }
 
+    cout << "Curriculum input: " << endl;
+    for (int i = 1; i <= obj.yearsOfStudy * 2; i++) {
+        cout << "How many courses the Semester " << i << " has? ";
+        int coursesOfSemester;
+        str >> coursesOfSemester;
+        cout << "Courses of Semester " << i << ":" << endl;
+        Course c;
+        for (int j = 0; j < coursesOfSemester; j++) {
+            str >> c;
+        }
+    }
+
     return str;
 }
 
 // Displaying Person with given id
-void Secretary::displayPerson(string id) {
+void Secretary::display(const string &id) const {
     cout << *unidata.at(id);
 }
 
 // Searching if a Person with given id exists
-bool Secretary::search(string id) {
-    map<string, Person *>::iterator iter;
-    iter = unidata.find(id);
-    if (iter != unidata.end()) {
+bool Secretary::search(const string &id) const {
+    map<string, Person *>::const_iterator const_iter;
+    const_iter = unidata.find(id);
+    if (const_iter != unidata.end()) {
         return true;
     }
 
@@ -165,7 +178,7 @@ bool Secretary::insert(const Person &person) {
 }
 
 // Removing a Person (that exists) with given id
-bool Secretary::remove(string id) {
+bool Secretary::remove(const string &id) {
     if (search(id)) {
         delete unidata[id];
         unidata.erase(id);
@@ -178,4 +191,60 @@ bool Secretary::remove(string id) {
 // Unidata map size
 int Secretary::count() {
     return unidata.size();
+}
+
+// Displaying a Course with given name
+void Secretary::displayCourse(const string &courseName) const {
+    map<int, vector<Course *>>::const_iterator const_iter;
+    for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
+        vector<Course *> course = const_iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->name.compare(courseName) == 0) {
+                cout << course[i];
+                return;
+            }
+        }
+    }
+    cout << "Course not found." << endl;
+}
+
+// Seacrhing a Course with given name
+bool Secretary::searchCourse(const string &courseName) const {
+    map<int, vector<Course *>>::const_iterator const_iter;
+    for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
+        vector<Course *> course = const_iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->name.compare(courseName) == 0)
+                return true;
+        }
+    }
+    return false;
+}
+
+// Inserting a Course in the curriculum
+bool Secretary::insertCourse(const Course &course) {
+    if (!searchCourse(course.name)) {
+        Course *c = new Course(course);
+        curriculum.at(course.semester).push_back(c);
+        return true;
+    }
+    return false;
+}
+
+bool Secretary::removeCourse(const string &courseName) {
+    if (searchCourse(courseName)) {
+        Course *c;
+        map<int, vector<Course *>>::iterator iter;
+        for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+            vector<Course *> course = iter->second;
+            vector<Course *>::iterator i;
+            for (i = course.begin(); i != course.end(); i++) {
+                if ((*i)->name.compare(courseName) == 0) {
+                    c = *i;
+                    course.erase(i);
+                }
+            }
+        }
+    }
+    return false;
 }

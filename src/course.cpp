@@ -6,15 +6,26 @@ Course::Course() : name(""), ects(0), courseType(false), semester(0) {}
 
 Course::Course(string name, int semester, int ects, bool courseType) : name(name), ects(ects), courseType(courseType), semester(semester) {}
 
+Course::Course(const Course &old_obj) {
+    if (this != &old_obj) {
+        this->name = old_obj.name;
+        this->ects = old_obj.ects;
+        this->courseType = old_obj.courseType;
+        this->semester = old_obj.semester;
+        this->staff = old_obj.staff;
+        this->students = old_obj.students;
+        this->grades = old_obj.grades;
+    }
+}
+
 Course::~Course() {}
 
-void Course::print(vector<Professor *> &v) {
-    for (int i = 0; i < v.size(); i++) {
-        cout << v[i] << endl
-             << endl;
+void Course::print(map<string, Professor *> &m) {
+    map<string, Professor *>::iterator iter;
+    for (iter = m.begin(); iter != m.end(); ++iter) {
+        cout << iter->second;
     }
-    cout << "\n"
-         << endl;
+    cout << endl;
 }
 
 ostream &operator<<(ostream &str, Course &obj) {
