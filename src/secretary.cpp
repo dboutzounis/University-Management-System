@@ -5,10 +5,26 @@
 #include <vector>
 
 // Constructing Secretary
-Secretary::Secretary() : department(""), yearsOfStudy(0) {}
+Secretary::Secretary() : department(""), departmentID(""), yearsOfStudy(0) {
+    currentYear = getCurrentYear();
+    countProfessors = 0;
+    countStudents = new unsigned int[currentYear + 1];
+
+    for (int i = 0; i <= currentYear; ++i) {
+        countStudents[i] = 0;
+    }
+}
 
 // Constructing Secretary using the parameters on the initializer list
-Secretary::Secretary(string department, int yearsOfStudy) : department(department), yearsOfStudy(yearsOfStudy) {}
+Secretary::Secretary(string department, string departmentID, unsigned int yearsOfStudy) : department(department), departmentID(departmentID), yearsOfStudy(yearsOfStudy) {
+    currentYear = getCurrentYear();
+    countProfessors = 0;
+    countStudents = new unsigned int[currentYear + 1];
+
+    for (int i = 0; i <= currentYear; ++i) {
+        countStudents[i] = 0;
+    }
+}
 
 // Destructing the dymically alocated memory of Person objects
 Secretary::~Secretary() {
@@ -17,6 +33,8 @@ Secretary::~Secretary() {
     for (iter = unidata.begin(); iter != unidata.end(); ++iter)
         delete iter->second;
     unidata.clear();
+
+    delete[] countStudents;
 }
 
 Person *Secretary::allocatePerson(const Person &person) {
@@ -37,9 +55,10 @@ Secretary::Secretary(const Secretary &old_obj) {
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
             Person *person = allocatePerson(*(const_iter->second));
-            unidata.insert(pair<string, Person *>(person->id, person));
+            unidata.insert(pair<string, Person *>(person->getID(), person));
         }
         department = old_obj.department;
+        departmentID = old_obj.departmentID;
         yearsOfStudy = old_obj.yearsOfStudy;
     }
 }
@@ -57,9 +76,10 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
             Person *person = allocatePerson(*(const_iter->second));
-            unidata.insert(pair<string, Person *>(person->id, person));
+            unidata.insert(pair<string, Person *>(person->getID(), person));
         }
         department = old_obj.department;
+        departmentID = old_obj.departmentID;
         yearsOfStudy = old_obj.yearsOfStudy;
     }
 
@@ -68,11 +88,20 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
 
 // Overloading operator+= to add a new Person to the map
 Secretary Secretary::operator+=(const Person &person) {
-    if (!search(person.id)) {
+    if (person.getID().compare("") == 0) {
         // Allocating memory for new Person
         Person *p = allocatePerson(person);
+        // Generating ID for the new Person
+        p->setID(generateID(*p));
         // Inserting the new Person to the unidata map
-        unidata.insert(pair<string, Person *>(p->id, p));
+        unidata.insert(pair<string, Person *>(p->getID(), p));
+    } else {
+        if (!search(person.getID())) {
+            // Allocating memory for new Person
+            Person *p = allocatePerson(person);
+            // Inserting the new Person to the unidata map
+            unidata.insert(pair<string, Person *>(p->getID(), p));
+        }
     }
 
     return *this;
@@ -81,9 +110,9 @@ Secretary Secretary::operator+=(const Person &person) {
 // Overloading operator-= to remove Person from the map
 Secretary Secretary::operator-=(const Person &person) {
     // Searching if the Person exists in order to remove him/her
-    if (search(person.id)) {
-        delete unidata[person.id];
-        unidata.erase(person.id);
+    if (search(person.getID())) {
+        delete unidata[person.getID()];
+        unidata.erase(person.getID());
     }
 
     return *this;
@@ -93,6 +122,9 @@ Secretary Secretary::operator-=(const Person &person) {
 ostream &operator<<(ostream &str, Secretary &obj) {
     str << endl;
     str << "Department " << obj.department << " data:" << endl;
+    str << endl;
+    str << "Department ID: " << obj.departmentID << endl;
+    str << "Years to complete " << obj.department << " :" << obj.yearsOfStudy << " years" << endl;
     str << endl;
 
     map<string, Person *>::iterator iter;
@@ -157,21 +189,30 @@ void Secretary::display(const string &id) const {
 bool Secretary::search(const string &id) const {
     map<string, Person *>::const_iterator const_iter;
     const_iter = unidata.find(id);
-    if (const_iter != unidata.end()) {
+    if (const_iter != unidata.end())
         return true;
-    }
 
     return false;
 }
 
 // Inserting a Person in the map
 bool Secretary::insert(const Person &person) {
-    if (!search(person.id)) {
+    if (person.getID().compare("") == 0) {
         // Allocating memory for new Person
         Person *p = allocatePerson(person);
+        // Generating ID for the new Person
+        p->setID(generateID(*p));
         // Inserting the new Person to the unidata map
-        unidata.insert(pair<string, Person *>(p->id, p));
+        unidata.insert(pair<string, Person *>(p->getID(), p));
         return true;
+    } else {
+        if (!search(person.getID())) {
+            // Allocating memory for new Person
+            Person *p = allocatePerson(person);
+            // Inserting the new Person to the unidata map
+            unidata.insert(pair<string, Person *>(p->getID(), p));
+            return true;
+        }
     }
 
     return false;
@@ -180,8 +221,12 @@ bool Secretary::insert(const Person &person) {
 // Removing a Person (that exists) with given id
 bool Secretary::remove(const string &id) {
     if (search(id)) {
-        delete unidata[id];
         unidata.erase(id);
+        if (typeid(unidata[id]) == typeid(Student)) {
+
+        } else {
+        }
+        delete unidata[id];
         return true;
     }
 
@@ -189,17 +234,17 @@ bool Secretary::remove(const string &id) {
 }
 
 // Unidata map size
-int Secretary::count() {
+int Secretary::size() {
     return unidata.size();
 }
 
 // Displaying a Course with given name
 void Secretary::displayCourse(const string &courseName) const {
-    map<int, vector<Course *>>::const_iterator const_iter;
+    map<unsigned int, vector<Course *>>::const_iterator const_iter;
     for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
         vector<Course *> course = const_iter->second;
         for (int i = 0; i < course.size(); i++) {
-            if (course[i]->name.compare(courseName) == 0) {
+            if (course[i]->getName().compare(courseName) == 0) {
                 cout << course[i];
                 return;
             }
@@ -210,11 +255,11 @@ void Secretary::displayCourse(const string &courseName) const {
 
 // Seacrhing a Course with given name
 bool Secretary::searchCourse(const string &courseName) const {
-    map<int, vector<Course *>>::const_iterator const_iter;
+    map<unsigned int, vector<Course *>>::const_iterator const_iter;
     for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
         vector<Course *> course = const_iter->second;
         for (int i = 0; i < course.size(); i++) {
-            if (course[i]->name.compare(courseName) == 0)
+            if (course[i]->getName().compare(courseName) == 0)
                 return true;
         }
     }
@@ -223,9 +268,9 @@ bool Secretary::searchCourse(const string &courseName) const {
 
 // Inserting a Course in the curriculum
 bool Secretary::insertCourse(const Course &course) {
-    if (!searchCourse(course.name)) {
+    if (!searchCourse(course.getName())) {
         Course *c = new Course(course);
-        curriculum.at(course.semester).push_back(c);
+        curriculum.at(course.getSemester()).push_back(c);
         return true;
     }
     return false;
@@ -234,17 +279,77 @@ bool Secretary::insertCourse(const Course &course) {
 bool Secretary::removeCourse(const string &courseName) {
     if (searchCourse(courseName)) {
         Course *c;
-        map<int, vector<Course *>>::iterator iter;
+        map<unsigned int, vector<Course *>>::iterator iter;
         for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
             vector<Course *> course = iter->second;
             vector<Course *>::iterator i;
             for (i = course.begin(); i != course.end(); i++) {
-                if ((*i)->name.compare(courseName) == 0) {
+                if ((*i)->getName().compare(courseName) == 0) {
                     c = *i;
                     course.erase(i);
+                    map<string, Professor *>::iterator j;
+                    for (j = c->getStaff().begin(); j != c->getStaff().end(); j++) {
+                        Professor *p = j->second;
+                        vector<Course *>::iterator k;
+                        for (k = p->getCourses().begin(); k != p->getCourses().end(); k++) {
+                            if ((*k)->getName().compare(courseName) == 0) {
+                                p->getCourses().erase(k);
+                            }
+                        }
+                    }
+                    map<string, Student *>::iterator l;
+                    for (l = c->getStudents().begin(); l != c->getStudents().end(); l++) {
+                        Student *s = l->second;
+                        vector<Course *>::iterator k;
+                        for (k = s->getCourses().begin(); k != s->getCourses().end(); k++) {
+                            if ((*k)->getName().compare(courseName) == 0) {
+                                s->getCourses().erase(k);
+                            }
+                        }
+                    }
                 }
             }
         }
+        delete c;
+        return true;
     }
     return false;
+}
+
+unsigned int Secretary::getCurrentYear() {
+    // Get the current time
+    chrono::system_clock::time_point currentTime = chrono::system_clock::now();
+
+    // Convert the time to a time_point representing the local time
+    time_t localTime = chrono::system_clock::to_time_t(currentTime);
+
+    // Extract the current year using put_time
+    tm *tm = localtime(&localTime);
+    unsigned int currentYear = tm->tm_year + 1900;
+
+    return currentYear;
+}
+
+string Secretary::generateID(const Person &person) {
+    if (typeid(person) == typeid(Student)) {
+        int c = countStudents[dynamic_cast<const Student &>(person).getStartingYear()];
+        if (c < 10)
+            return departmentID + to_string(dynamic_cast<const Student &>(person).getStartingYear()) + "0000" + to_string(c);
+        else if (c < 100)
+            return departmentID + to_string(dynamic_cast<const Student &>(person).getStartingYear()) + "000" + to_string(c);
+        else if (c < 1000)
+            return departmentID + to_string(dynamic_cast<const Student &>(person).getStartingYear()) + "00" + to_string(c);
+        else if (c < 10000)
+            return departmentID + to_string(dynamic_cast<const Student &>(person).getStartingYear()) + "0" + to_string(c);
+        else
+            return departmentID + to_string(dynamic_cast<const Student &>(person).getStartingYear()) + to_string(c);
+    } else {
+        int c = countProfessors;
+        if (c < 10)
+            return departmentID + "00" + to_string(c);
+        else if (c < 100)
+            return departmentID + "0" + to_string(c);
+        else
+            return departmentID + to_string(c);
+    }
 }

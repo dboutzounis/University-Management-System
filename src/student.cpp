@@ -8,7 +8,10 @@ using namespace std;
 Student::Student() : Person(), semester(0), ects(0), gpa(0), memberSince(0) {}
 
 // Constructing Student using the parameters on the initializer list
-Student::Student(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id, int semester, int ects, double gpa, int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), semester(1), ects(0), gpa(gpa), memberSince(memberSince) {}
+Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone), semester(1), ects(0), gpa(gpa), memberSince(memberSince) {}
+
+// Constructing Student using the parameters on the initializer list
+Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), semester(1), ects(0), gpa(gpa), memberSince(memberSince) {}
 
 // Copy constructing Student object
 Student::Student(const Student &old_obj) {

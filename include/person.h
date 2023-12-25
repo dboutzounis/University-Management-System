@@ -14,7 +14,7 @@ private:
 protected:
     string fname;
     string lname;
-    int day, month, year;
+    unsigned int day, month, year;
     char gender;
     string nationality;
     string email;
@@ -22,14 +22,14 @@ protected:
     string id;
 
     // Helper functions
-    virtual Person *create() const = 0;
     virtual void print(ostream &str) const;
 
 public:
     // Constructor
     Person();
     // Constructor with parameters
-    Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id);
+    Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone);
+    Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id);
     // Destructor
     virtual ~Person();
     // Output stream operator overloading
@@ -38,6 +38,8 @@ public:
     friend istream &operator>>(istream &str, Person &obj);
     // Display Person
     virtual void display() const = 0;
+    // Create Person
+    virtual Person *create() const = 0;
 
     /* Other Functions */
 
@@ -74,7 +76,7 @@ public:
         return phone;
     }
 
-    inline string getId() const {
+    inline string getID() const {
         return id;
     }
 
@@ -82,8 +84,39 @@ public:
         return count;
     }
 
-    // Allowing Secretary class to access the private members of Person Class (friend class)
-    friend class Secretary;
+    inline void setFname(const string &fname) {
+        this->fname = fname;
+    }
+
+    inline void setLname(const string &lname) {
+        this->fname = lname;
+    }
+
+    inline void setBirthDate(unsigned int day, unsigned int month, unsigned int year) {
+        this->day = day;
+        this->month = month;
+        this->year = year;
+    }
+
+    inline void setGender(char gender) {
+        this->gender = gender;
+    }
+
+    inline void setNationality(const string &nationality) {
+        this->nationality = nationality;
+    }
+
+    inline void setEmail(const string &email) {
+        this->email = email;
+    }
+
+    inline void setPhone(const string &phone) {
+        this->phone = phone;
+    }
+
+    inline void setID(const string &id) {
+        this->id = id;
+    }
 };
 
 #endif

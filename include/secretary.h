@@ -5,6 +5,7 @@
 #include "course.h"
 #include "professor.h"
 #include "student.h"
+#include <chrono>
 #include <iostream>
 #include <map>
 #include <string>
@@ -17,17 +18,25 @@ class Secretary {
 private:
     // Using the map from STL to store pairs of <string, Person *> (string = key, Person * points to instances of the Person object)
     map<string, Person *> unidata;
+    // Using the map from STL to store pairs of <int, vector<Course *>> (int = Semester, vector<Course *> holds all the Courses of a Semester)
+    map<unsigned int, vector<Course *>> curriculum;
     string department;
-    int yearsOfStudy;
-    map<int, vector<Course *>> curriculum;
+    string departmentID;
+    unsigned int yearsOfStudy;
+    unsigned int currentYear;
+    unsigned int *countStudents;
+    unsigned int countProfessors;
 
+    // Helper functions
     Person *allocatePerson(const Person &person);
+    unsigned int getCurrentYear();
+    string generateID(const Person &person);
 
 public:
     // Constructor
     Secretary();
     // Constructor with the department name as parameter
-    Secretary(string department, int yearsOfStudy);
+    Secretary(string department, string departmentID, unsigned int yearsOfStudy);
     // Destructor
     ~Secretary();
     // Copy Constructor
@@ -51,7 +60,7 @@ public:
     // Remove Person from the map
     bool remove(const string &id);
     // Unidata map size
-    int count();
+    int size();
     // Display Course
     void displayCourse(const string &courseName) const;
     // Search Course
@@ -79,7 +88,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            return unidata.at(id)->fname;
+            return unidata.at(id)->getFname();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -89,7 +98,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            return unidata.at(id)->lname;
+            return unidata.at(id)->getLname();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -99,7 +108,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            return to_string(unidata.at(id)->day) + "/" + to_string(unidata.at(id)->month) + "/" + to_string(unidata.at(id)->year);
+            return unidata.at(id)->getBirthDate();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -109,11 +118,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            if (unidata.at(id)->gender == 'M' || unidata.at(id)->gender == 'm')
-                return "Male";
-            else if (unidata.at(id)->gender == 'F' || unidata.at(id)->gender == 'f')
-                return "Female";
-            return "Other";
+            return unidata.at(id)->getGender();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -123,7 +128,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            return unidata.at(id)->nationality;
+            return unidata.at(id)->getNationality();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -133,7 +138,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            return unidata.at(id)->email;
+            return unidata.at(id)->getEmail();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -143,7 +148,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            return unidata.at(id)->phone;
+            return unidata.at(id)->getPhone();
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -153,7 +158,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->fname = fname;
+            unidata[id]->setFname(fname);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -163,19 +168,17 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->lname = lname;
+            unidata[id]->setLname(lname);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
     }
 
-    inline void setBirthDate(string id, int day, int month, int year) {
+    inline void setBirthDate(string id, unsigned int day, unsigned int month, unsigned int year) {
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->day = day;
-            unidata[id]->month = month;
-            unidata[id]->year = year;
+            unidata[id]->setBirthDate(day, month, year);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -185,7 +188,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->gender = gender;
+            unidata[id]->setGender(gender);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -195,7 +198,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->nationality = nationality;
+            unidata[id]->setNationality(nationality);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -205,7 +208,7 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->email = email;
+            unidata[id]->setEmail(email);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
@@ -215,20 +218,19 @@ public:
         try {
             if (this->search(id) == false)
                 throw;
-            unidata[id]->phone = phone;
+            unidata[id]->setPhone(phone);
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
     }
 
-    inline void setSemester(string id, int semester) {
+    inline void setSemester(string id, unsigned int semester) {
         try {
             if (this->search(id) == false)
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Professor))
                 throw;
-            dynamic_cast<Student *>(unidata[id])->semester = semester;
-
+            dynamic_cast<Student *>(unidata[id])->setSemester(semester);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -236,13 +238,13 @@ public:
         }
     }
 
-    inline void setECTS(string id, int ects) {
+    inline void setECTS(string id, unsigned int ects) {
         try {
             if (this->search(id) == false)
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Professor))
                 throw;
-            dynamic_cast<Student *>(unidata[id])->ects = ects;
+            dynamic_cast<Student *>(unidata[id])->setEcts(ects);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -256,8 +258,7 @@ public:
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Professor))
                 throw;
-            dynamic_cast<Student *>(unidata[id])->gpa = gpa;
-
+            dynamic_cast<Student *>(unidata[id])->setGPA(gpa);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -265,14 +266,13 @@ public:
         }
     }
 
-    inline void setStartingYear(string id, int memberSince) {
+    inline void setStartingYear(string id, unsigned int memberSince) {
         try {
             if (this->search(id) == false)
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Professor))
                 throw;
-            dynamic_cast<Student *>(unidata[id])->memberSince = memberSince;
-
+            dynamic_cast<Student *>(unidata[id])->setStartingYear(memberSince);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -286,8 +286,7 @@ public:
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Student))
                 throw;
-            dynamic_cast<Professor *>(unidata[id])->trait = trait;
-
+            dynamic_cast<Professor *>(unidata[id])->setTrait(trait);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -301,8 +300,7 @@ public:
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Student))
                 throw;
-            dynamic_cast<Professor *>(unidata[id])->rank = rank;
-
+            dynamic_cast<Professor *>(unidata[id])->setRank(rank);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {
@@ -316,8 +314,7 @@ public:
                 throw(0);
             if (typeid(*unidata[id]) == typeid(Student))
                 throw;
-            dynamic_cast<Professor *>(unidata[id])->officeNo = officeNo;
-
+            dynamic_cast<Professor *>(unidata[id])->setOfficeNo(officeNo);
         } catch (int n) {
             cerr << "Non existing ID." << endl;
         } catch (...) {

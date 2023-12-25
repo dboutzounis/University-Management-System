@@ -2,7 +2,6 @@
 #ifndef COURSE_H
 #define COURSE_H
 
-#include "professor.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -13,9 +12,9 @@ using namespace std;
 class Course {
 private:
     string name;
-    int ects;
+    unsigned int ects;
     bool courseType;
-    int semester;
+    unsigned int semester;
     map<string, Professor *> staff;
     map<string, Student *> students;
     map<string, double> grades;
@@ -27,7 +26,7 @@ public:
     // Constructor
     Course();
     // Constructor with parameters
-    Course(string name, int semester, int ects, bool courseType);
+    Course(string name, unsigned int semester, unsigned int ects, bool courseType);
     // Copy Constructor
     Course(const Course &old_obj);
     // Destructor
@@ -45,11 +44,11 @@ public:
         return name;
     }
 
-    inline int getEcts() const {
+    inline unsigned int getEcts() const {
         return ects;
     }
 
-    inline int getSemester() const {
+    inline unsigned int getSemester() const {
         return semester;
     }
 
@@ -60,8 +59,33 @@ public:
         return "Optional";
     }
 
-    // Allowing Secretary class to access the private members of Course Class (friend class)
-    friend class Secretary;
+    inline map<string, Professor *> getStaff() const {
+        return this->staff;
+    }
+
+    inline map<string, Student *> getStudents() const {
+        return this->students;
+    }
+
+    inline map<string, double> getGrades() const {
+        return this->grades;
+    }
+
+    inline void setName(const string &name) {
+        this->name = name;
+    }
+
+    inline void setEcts(unsigned int ects) {
+        this->ects = ects;
+    }
+
+    inline void setSemester(unsigned int semester) {
+        this->semester = semester;
+    }
+
+    inline void setCourseType(bool courseType) {
+        this->courseType = courseType;
+    }
 };
 
 #endif

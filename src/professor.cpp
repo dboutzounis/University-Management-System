@@ -8,7 +8,10 @@ using namespace std;
 Professor::Professor() : Person(), trait(""), rank(""), officeNo("") {}
 
 // Constructing Professor using the parameters on the initializer list
-Professor::Professor(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id, string trait, string rank, string officeNo) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), trait(trait), rank(rank), officeNo(officeNo) {}
+Professor::Professor(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string trait, string rank, string officeNo) : Person(fname, lname, day, month, year, gender, nationality, email, phone), trait(trait), rank(rank), officeNo(officeNo) {}
+
+// Constructing Professor using the parameters on the initializer list
+Professor::Professor(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, string trait, string rank, string officeNo) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), trait(trait), rank(rank), officeNo(officeNo) {}
 
 // Copy constructing Professor object
 Professor::Professor(const Professor &old_obj) {

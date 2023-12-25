@@ -61,7 +61,7 @@ These are the methods of the class Secretary:
 -   `Search`
 -   `Insert`
 -   `Remove`
--   `Count`
+-   `Size`
 -   `Accessors`
 -   `Mutators`
 

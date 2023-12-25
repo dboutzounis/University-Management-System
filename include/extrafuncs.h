@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-bool isLeapYear(int year);
+bool isLeapYear(unsigned int year);
 
-bool isValidDate(int day, int month, int year);
+bool isValidDate(unsigned int day, unsigned int month, unsigned int year);
 
 #endif

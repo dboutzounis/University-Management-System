@@ -12,21 +12,21 @@ using namespace std;
 // Definition of Student class
 class Student : public Person {
 private:
-    int semester;
-    int ects;
+    unsigned int semester;
+    unsigned int ects;
     double gpa;
-    int memberSince;
+    unsigned int memberSince;
     vector<Course *> courses;
 
     // Helper functions
-    Person *create() const;
     void print(ostream &str) const;
 
 public:
     // Constructor
     Student();
     // Constructor with parameters
-    Student(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id, int semester, int ects, double gpa, int memberSince);
+    Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince);
+    Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince);
     // Copy Constructor
     Student(const Student &old_obj);
     // Destructor
@@ -37,14 +37,16 @@ public:
     friend istream &operator>>(istream &str, Student &obj);
     // Display Student
     void display() const;
+    // Create Student
+    Person *create() const;
 
     /* Other Functions */
 
-    inline int getSemester() const {
+    inline unsigned int getSemester() const {
         return semester;
     }
 
-    inline int getEcts() const {
+    inline unsigned int getEcts() const {
         return ects;
     }
 
@@ -52,12 +54,29 @@ public:
         return gpa;
     }
 
-    inline int getStartingYear() const {
+    inline unsigned int getStartingYear() const {
         return memberSince;
     }
 
-    // Allowing Secretary class to access the private members of Student Class (friend class)
-    friend class Secretary;
+    inline vector<Course *> getCourses() const {
+        return this->courses;
+    }
+
+    inline void setSemester(unsigned int semester) {
+        this->semester = semester;
+    }
+
+    inline void setEcts(unsigned int ects) {
+        this->ects = ects;
+    }
+
+    inline void setGPA(double gpa) {
+        this->gpa = gpa;
+    }
+
+    inline void setStartingYear(unsigned int memberSince) {
+        this->memberSince = memberSince;
+    }
 };
 
 #endif

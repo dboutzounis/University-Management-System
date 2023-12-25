@@ -13,7 +13,12 @@ Person::Person() : fname(""), lname(""), day(0), month(0), year(0), gender('\0')
 }
 
 // Constructing Person using the parameters on the initializer list
-Person::Person(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id(id) {
+Person::Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id("") {
+    count++;
+}
+
+// Constructing Person using the parameters on the initializer list
+Person::Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id(id) {
     count++;
 }
 

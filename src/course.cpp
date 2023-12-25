@@ -1,10 +1,11 @@
 #include "../include/course.h"
+#include "../include/professor.h"
 #include <iostream>
 #include <string>
 
 Course::Course() : name(""), ects(0), courseType(false), semester(0) {}
 
-Course::Course(string name, int semester, int ects, bool courseType) : name(name), ects(ects), courseType(courseType), semester(semester) {}
+Course::Course(string name, unsigned int semester, unsigned int ects, bool courseType) : name(name), ects(ects), courseType(courseType), semester(semester) {}
 
 Course::Course(const Course &old_obj) {
     if (this != &old_obj) {

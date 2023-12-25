@@ -6,14 +6,17 @@ using namespace std;
 
 int main(void) {
     Student p;
-    string department, mode, id;
+    string department, departmentID, mode, id;
     int yearsOfStudy;
     cout << "Enter the name of the department: ";
     getline(cin, department);
     cout << endl;
+    cout << "Enter the department ID: ";
+    cin >> departmentID;
     cout << "Enter how many years of study the department has: ";
     cin >> yearsOfStudy;
-    Secretary secretary(department, yearsOfStudy), copiedSecretary;
+
+    Secretary secretary(department, departmentID, yearsOfStudy), copiedSecretary;
     cout << "---WELCOME TO THE SECRETARY OF " << secretary.getDepartment() << "!---" << endl
          << endl;
 

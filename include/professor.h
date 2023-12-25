@@ -17,14 +17,14 @@ private:
     vector<Course *> courses;
 
     // Helper functions
-    Person *create() const;
     void print(ostream &str) const;
 
 public:
     // Constructor
     Professor();
     // Constructor with parameters
-    Professor(string fname, string lname, int day, int month, int year, char gender, string nationality, string email, string phone, string id, string trait, string rank, string officeNo);
+    Professor(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string trait, string rank, string officeNo);
+    Professor(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, string trait, string rank, string officeNo);
     // Copy Constructor
     Professor(const Professor &old_obj);
     // Destructor
@@ -35,6 +35,8 @@ public:
     friend istream &operator>>(istream &str, Professor &obj);
     // Display Professor
     void display() const;
+    // Create Professor
+    Person *create() const;
 
     /* Other Functions */
 
@@ -50,8 +52,21 @@ public:
         return officeNo;
     }
 
-    // Allowing Secretary class to access the private members of Professor Class (friend class)
-    friend class Secretary;
+    inline vector<Course *> getCourses() const {
+        return this->courses;
+    }
+
+    inline void setTrait(const string &trait) {
+        this->trait = trait;
+    }
+
+    inline void setRank(const string &rank) {
+        this->rank = rank;
+    }
+
+    inline void setOfficeNo(const string &officeNo) {
+        this->officeNo = officeNo;
+    }
 };
 
 #endif

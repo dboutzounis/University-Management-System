@@ -1,11 +1,11 @@
 #include "../include/extrafuncs.h"
 #include <iostream>
 
-bool isLeapYear(int year) {
+bool isLeapYear(unsigned int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
 }
 
-bool isValidDate(int day, int month, int year) {
+bool isValidDate(unsigned int day, unsigned int month, unsigned int year) {
     if (year < 0 || month < 1 || month > 12 || day < 1)
         return false;
 
