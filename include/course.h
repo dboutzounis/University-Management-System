@@ -15,12 +15,12 @@ private:
     unsigned int ects;
     bool courseType;
     unsigned int semester;
-    map<string, Professor *> staff;
-    map<string, Student *> students;
+    map<string, Professor> staff;
+    map<string, Student> students;
     map<string, double> grades;
 
     // Helper functions
-    void print(map<string, Professor *> &v);
+    void print(map<string, Professor> &v);
 
 public:
     // Constructor
@@ -37,6 +37,22 @@ public:
     friend istream &operator>>(istream &str, Course &obj);
     // Display Course
     void display() const;
+    // Display Professor
+    void displayProfessor(const string &id) const;
+    // Search Professor
+    bool searchProfessor(const string &id) const;
+    // Insert Professor
+    bool insertProfessor(const Professor &professor);
+    // Remove Professor
+    bool removeProfessor(const string &id);
+    // Display Student
+    void displayStudent(const string &id) const;
+    // Search Student
+    bool searchStudent(const string &id) const;
+    // Insert Student
+    bool insertStudent(const Student &student);
+    // Remove Student
+    bool removeStudent(const string &id);
 
     /* Other Functions */
 
@@ -57,18 +73,6 @@ public:
             return "Mandatory";
         }
         return "Optional";
-    }
-
-    inline map<string, Professor *> getStaff() const {
-        return this->staff;
-    }
-
-    inline map<string, Student *> getStudents() const {
-        return this->students;
-    }
-
-    inline map<string, double> getGrades() const {
-        return this->grades;
     }
 
     inline void setName(const string &name) {

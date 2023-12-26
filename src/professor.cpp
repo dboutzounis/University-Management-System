@@ -103,7 +103,51 @@ istream &operator>>(istream &str, Professor &obj) {
     return str;
 }
 
-// Display Professor
+// Displaying Professor
 void Professor::display() const {
     cout << this;
+}
+
+// Displaying a Course from the vector of Professor's Courses
+void Professor::displayCourse(const string &courseName) const {
+    vector<Course>::const_iterator const_iter;
+    for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
+        if (const_iter->getName().compare(courseName) == 0) {
+            const_iter->display();
+            return;
+        }
+    }
+    cout << "Course not found." << endl;
+}
+
+// Searching a Course in the vector of Professor's Courses
+bool Professor::searchCourse(const string &courseName) const {
+    vector<Course>::const_iterator const_iter;
+    for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
+        if (const_iter->getName().compare(courseName) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Inserting a Course in the vector of Professor's Courses
+bool Professor::insertCourse(const Course &course) {
+    if (!searchCourse(course.getName())) {
+        courses.push_back(course);
+        return true;
+    }
+    return false;
+}
+
+// Removing a Course from the vector of Professor's Courses
+bool Professor::removeCourse(const string &courseName) {
+    vector<Course>::iterator iter;
+    for (iter = courses.begin(); iter != courses.end(); ++iter) {
+        if (iter->getName().compare(courseName) == 0) {
+            courses.erase(iter);
+            return true;
+        }
+    }
+    return false;
 }

@@ -16,7 +16,7 @@ private:
     unsigned int ects;
     double gpa;
     unsigned int memberSince;
-    vector<Course *> courses;
+    vector<Course> courses;
 
     // Helper functions
     void print(ostream &str) const;
@@ -39,6 +39,14 @@ public:
     void display() const;
     // Create Student
     Person *create() const;
+    // Display Course
+    void displayCourse(const string &courseName) const;
+    // Search Course
+    bool searchCourse(const string &courseName) const;
+    // Insert Course
+    bool insertCourse(const Course &course);
+    // Remove Course
+    bool removeCourse(const string &courseName);
 
     /* Other Functions */
 
@@ -56,10 +64,6 @@ public:
 
     inline unsigned int getStartingYear() const {
         return memberSince;
-    }
-
-    inline vector<Course *> getCourses() const {
-        return this->courses;
     }
 
     inline void setSemester(unsigned int semester) {

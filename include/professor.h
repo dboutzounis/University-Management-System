@@ -14,7 +14,7 @@ private:
     string trait;
     string rank;
     string officeNo;
-    vector<Course *> courses;
+    vector<Course> courses;
 
     // Helper functions
     void print(ostream &str) const;
@@ -37,6 +37,14 @@ public:
     void display() const;
     // Create Professor
     Person *create() const;
+    // Display Course
+    void displayCourse(const string &courseName) const;
+    // Search Course
+    bool searchCourse(const string &courseName) const;
+    // Insert Course
+    bool insertCourse(const Course &course);
+    // Remove Course
+    bool removeCourse(const string &courseName);
 
     /* Other Functions */
 
@@ -50,10 +58,6 @@ public:
 
     inline string getOfficeNo() const {
         return officeNo;
-    }
-
-    inline vector<Course *> getCourses() const {
-        return this->courses;
     }
 
     inline void setTrait(const string &trait) {

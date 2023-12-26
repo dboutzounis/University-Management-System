@@ -51,15 +51,26 @@ Secretary::Secretary(const Secretary &old_obj) {
             delete iter->second;
         unidata.clear();
 
+        delete[] countStudents;
+
         // Copying old_obj to the current Secretary instance
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
             Person *person = allocatePerson(*(const_iter->second));
             unidata.insert(pair<string, Person *>(person->getID(), person));
         }
+
         department = old_obj.department;
         departmentID = old_obj.departmentID;
         yearsOfStudy = old_obj.yearsOfStudy;
+        currentYear = old_obj.currentYear;
+        countProfessors = old_obj.countProfessors;
+
+        countStudents = new unsigned int[currentYear + 1];
+
+        for (int i = 0; i <= currentYear; ++i) {
+            countStudents[i] = old_obj.countStudents[i];
+        }
     }
 }
 
@@ -72,15 +83,26 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
             delete iter->second;
         unidata.clear();
 
+        delete[] countStudents;
+
         // Copying old_obj to the current Secretary instance
         map<string, Person *>::const_iterator const_iter;
         for (const_iter = old_obj.unidata.begin(); const_iter != old_obj.unidata.end(); ++const_iter) {
             Person *person = allocatePerson(*(const_iter->second));
             unidata.insert(pair<string, Person *>(person->getID(), person));
         }
+
         department = old_obj.department;
         departmentID = old_obj.departmentID;
         yearsOfStudy = old_obj.yearsOfStudy;
+        currentYear = old_obj.currentYear;
+        countProfessors = old_obj.countProfessors;
+
+        countStudents = new unsigned int[currentYear + 1];
+
+        for (int i = 0; i <= currentYear; ++i) {
+            countStudents[i] = old_obj.countStudents[i];
+        }
     }
 
     return *this;
@@ -221,15 +243,27 @@ bool Secretary::insert(const Person &person) {
 // Removing a Person (that exists) with given id
 bool Secretary::remove(const string &id) {
     if (search(id)) {
-        unidata.erase(id);
-        if (typeid(unidata[id]) == typeid(Student)) {
-
+        if (typeid(unidata.at(id)) == typeid(Student)) {
+            map<unsigned int, vector<Course *>>::iterator iter;
+            for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+                vector<Course *> course = iter->second;
+                for (int i = 0; i < course.size(); i++)
+                    if (course[i]->searchStudent(id))
+                        course[i]->removeStudent(id);
+            }
         } else {
+            map<unsigned int, vector<Course *>>::iterator iter;
+            for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+                vector<Course *> course = iter->second;
+                for (int i = 0; i < course.size(); i++)
+                    if (course[i]->searchProfessor(id))
+                        course[i]->removeProfessor(id);
+            }
         }
         delete unidata[id];
+        unidata.erase(id);
         return true;
     }
-
     return false;
 }
 
@@ -245,7 +279,7 @@ void Secretary::displayCourse(const string &courseName) const {
         vector<Course *> course = const_iter->second;
         for (int i = 0; i < course.size(); i++) {
             if (course[i]->getName().compare(courseName) == 0) {
-                cout << course[i];
+                course[i]->display();
                 return;
             }
         }
@@ -258,10 +292,9 @@ bool Secretary::searchCourse(const string &courseName) const {
     map<unsigned int, vector<Course *>>::const_iterator const_iter;
     for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
         vector<Course *> course = const_iter->second;
-        for (int i = 0; i < course.size(); i++) {
+        for (int i = 0; i < course.size(); i++)
             if (course[i]->getName().compare(courseName) == 0)
                 return true;
-        }
     }
     return false;
 }
@@ -276,42 +309,29 @@ bool Secretary::insertCourse(const Course &course) {
     return false;
 }
 
+// Removing a Course from the Curriculum
 bool Secretary::removeCourse(const string &courseName) {
-    if (searchCourse(courseName)) {
-        Course *c;
-        map<unsigned int, vector<Course *>>::iterator iter;
-        for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
-            vector<Course *> course = iter->second;
-            vector<Course *>::iterator i;
-            for (i = course.begin(); i != course.end(); i++) {
-                if ((*i)->getName().compare(courseName) == 0) {
-                    c = *i;
-                    course.erase(i);
-                    map<string, Professor *>::iterator j;
-                    for (j = c->getStaff().begin(); j != c->getStaff().end(); j++) {
-                        Professor *p = j->second;
-                        vector<Course *>::iterator k;
-                        for (k = p->getCourses().begin(); k != p->getCourses().end(); k++) {
-                            if ((*k)->getName().compare(courseName) == 0) {
-                                p->getCourses().erase(k);
-                            }
-                        }
-                    }
-                    map<string, Student *>::iterator l;
-                    for (l = c->getStudents().begin(); l != c->getStudents().end(); l++) {
-                        Student *s = l->second;
-                        vector<Course *>::iterator k;
-                        for (k = s->getCourses().begin(); k != s->getCourses().end(); k++) {
-                            if ((*k)->getName().compare(courseName) == 0) {
-                                s->getCourses().erase(k);
-                            }
-                        }
+    map<unsigned int, vector<Course *>>::iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> courses = iter->second;
+        vector<Course *>::iterator c_iter;
+        for (c_iter = courses.begin(); c_iter != courses.end(); ++c_iter) {
+            if ((*c_iter)->getName().compare(courseName) == 0) {
+                map<string, Person *>::iterator p_iter;
+                for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
+                    if (typeid(p_iter->second) == typeid(Student)) {
+                        if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName))
+                            dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
+                    } else {
+                        if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName))
+                            dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
                     }
                 }
+                delete *c_iter;
+                courses.erase(c_iter);
+                return true;
             }
         }
-        delete c;
-        return true;
     }
     return false;
 }
