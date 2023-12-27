@@ -427,6 +427,7 @@ bool Secretary::assignCourseToProfessor(const string &courseName, const string &
     return false;
 }
 
+// Unregistering a Student from a Course
 bool Secretary::unregisterStudentFromCourse(const string &courseName, const string &id) {
     if (search(id)) {
         if (typeid(*unidata.at(id)) == typeid(Student)) {
@@ -462,6 +463,7 @@ bool Secretary::unregisterStudentFromCourse(const string &courseName, const stri
     return false;
 }
 
+// Unassigning a Course from a Professor
 bool Secretary::unassignCourseFromProfessor(const string &courseName, const string &id) {
     if (search(id)) {
         if (typeid(*unidata.at(id)) == typeid(Professor)) {
@@ -497,7 +499,45 @@ bool Secretary::unassignCourseFromProfessor(const string &courseName, const stri
     return false;
 }
 
+// Assigning grades to all the Students of a Course
 void Secretary::assignGrades(const string &courseName, const string &id) {
+    map<string, double> grades;
+    if (search(id)) {
+        if (typeid(*unidata.at(id)) == typeid(Professor)) {
+            map<unsigned int, vector<Course *>>::iterator iter;
+            for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+                vector<Course *> course = iter->second;
+                for (int i = 0; i < course.size(); i++) {
+                    if (course[i]->getName().compare(courseName) == 0) {
+                        grades = course[i]->getGrades();
+                        map<string, double>::iterator g_iter;
+                        cout << "Input grades for course " << course[i]->getName() << endl;
+                        for (g_iter = grades.begin(); g_iter != grades.end(); ++g_iter) {
+                            cout << g_iter->first << ": ";
+                            cin >> g_iter->second;
+                        }
+                        course[i]->setGrades(grades);
+                        map<string, Person *>::iterator p_iter;
+                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
+                            if (p_iter->second->getID().compare(id) == 0)
+                                continue;
+                            if (typeid(*p_iter->second) == typeid(Student)) {
+                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
+                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
+                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
+                                }
+                            } else {
+                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
+                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
+                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Getting current year

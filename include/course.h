@@ -75,6 +75,10 @@ public:
         return "Optional";
     }
 
+    inline map<string, double> getGrades() const {
+        return this->grades;
+    }
+
     inline void setName(const string &name) {
         this->name = name;
     }

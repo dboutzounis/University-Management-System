@@ -1,5 +1,6 @@
 #include "../include/professor.h"
 #include "../include/extrafuncs.h"
+#include <cmath>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -150,4 +151,35 @@ bool Professor::removeCourse(const string &courseName) {
         }
     }
     return false;
+}
+
+// Displaying Statistics of all Courses of current semester
+void Professor::displayStatistics() const {
+    vector<Course>::const_iterator const_iter;
+    map<string, double> grades;
+    map<string, double>::const_iterator g_iter;
+    cout << "Course statistics of professor " << lname << " " << fname << endl;
+    for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
+        grades = const_iter->getGrades();
+        if (grades.size() == 0) {
+            cout << "No students participated in " << const_iter->getName() << "." << endl;
+            continue;
+        }
+        double sum = 0.0;
+        int count = 0, distribution[11] = {0};
+        for (g_iter = grades.begin(); g_iter != grades.end(); ++g_iter) {
+            if (g_iter->second >= 5.0)
+                count++;
+            sum += g_iter->second;
+            distribution[static_cast<int>(round(g_iter->second))]++;
+        }
+        cout << "Statistics of course " << const_iter->getName() << ":" << endl;
+        cout << "Students that took part in the exams were " << grades.size() << "." << endl;
+        cout << "Success rate: " << (static_cast<double>(count) / grades.size()) * 100 << "%." << endl;
+        cout << "Fail rate: " << 100 - (static_cast<double>(count) / grades.size()) * 100 << "%." << endl;
+        for (int i = 0; i < 11; i++)
+            cout << "Students with grade " << i << " were: " << distribution[i] << "." << endl;
+        cout << "Average grade: " << sum / grades.size() << "." << endl
+             << endl;
+    }
 }

@@ -45,6 +45,8 @@ public:
     bool insertCourse(const Course &course);
     // Remove Course
     bool removeCourse(const string &courseName);
+    // Display course statistics
+    void displayStatistics() const;
 
     /* Other Functions */
 
