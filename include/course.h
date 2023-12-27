@@ -90,6 +90,10 @@ public:
     inline void setCourseType(bool courseType) {
         this->courseType = courseType;
     }
+
+    inline void setGrades(const map<string, double> &grades) {
+        this->grades = grades;
+    }
 };
 
 #endif

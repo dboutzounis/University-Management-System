@@ -70,9 +70,17 @@ public:
     // Remove Course from Secretary
     bool removeCourse(const string &courseName);
     // Student registration to course
-    void registerStudentToCourse(const string &coursename, const string &id);
+    bool registerStudentToCourse(const string &courseName, const string &id);
+    // Unregister Student from Course
+    bool unregisterStudentFromCourse(const string &courseName, const string &id);
+    // Unassign Course from Professor
+    bool unassignCourseFromProfessor(const string &courseName, const string &id);
     // Course assignment to professor
-    void assignCourseToProfessor(const string &coursename, const string &id);
+    bool assignCourseToProfessor(const string &courseName, const string &id);
+    // Cin grades input from professor
+    void assignGrades(const string &courseName, const string &id);
+    // File input for grades from professor
+    void assignGrades(const string &courseName, const string &id);
 
     /* Other Functions */
 
