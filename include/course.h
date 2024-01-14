@@ -1,7 +1,7 @@
 #pragma once
-#ifndef COURSE_H
-#define COURSE_H
 
+#include "professor.h"
+#include "student.h"
 #include <iostream>
 #include <map>
 #include <string>
@@ -13,14 +13,14 @@ class Course {
 private:
     string name;
     unsigned int ects;
-    bool courseType;
+    bool courseType; // Coursetype==True means that the course is mandatory, else it's optional
     unsigned int semester;
-    map<string, Professor> staff;
-    map<string, Student> students;
+    map<string, Professor *> staff;
+    map<string, Student *> students;
     map<string, double> grades;
 
     // Helper functions
-    void print(map<string, Professor> &v);
+    void print(map<string, Professor *> &v);
 
 public:
     // Constructor
@@ -42,7 +42,7 @@ public:
     // Search Professor
     bool searchProfessor(const string &id) const;
     // Insert Professor
-    bool insertProfessor(const Professor &professor);
+    bool insertProfessor(Professor *professor);
     // Remove Professor
     bool removeProfessor(const string &id);
     // Display Student
@@ -50,7 +50,7 @@ public:
     // Search Student
     bool searchStudent(const string &id) const;
     // Insert Student
-    bool insertStudent(const Student &student);
+    bool insertStudent(Student *student);
     // Remove Student
     bool removeStudent(const string &id);
 
@@ -99,5 +99,3 @@ public:
         this->grades = grades;
     }
 };
-
-#endif

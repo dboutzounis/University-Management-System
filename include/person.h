@@ -1,6 +1,4 @@
 #pragma once
-#ifndef PERSON_H
-#define PERSON_H
 
 #include <iostream>
 #include <string>
@@ -118,5 +116,3 @@ public:
         this->id = id;
     }
 };
-
-#endif

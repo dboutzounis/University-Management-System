@@ -1,8 +1,7 @@
 #pragma once
-#ifndef SECRETARY_H
-#define SECRETARY_H
 
 #include "course.h"
+#include "person.h"
 #include "professor.h"
 #include "student.h"
 #include <chrono>
@@ -19,11 +18,12 @@ private:
     // Using the map from STL to store pairs of <string, Person *> (string = key, Person * points to instances of the Person object)
     map<string, Person *> unidata;
     // Using the map from STL to store pairs of <int, vector<Course *>> (int = Semester, vector<Course *> holds all the Courses of a Semester)
-    map<unsigned int, vector<Course *>> curriculum;
+    map<unsigned int, vector<Course *> > curriculum;
     string department;
     string departmentID;
     unsigned int yearsOfStudy;
     unsigned int currentYear;
+    unsigned int graduationEcts;
     unsigned int *countStudents;
     unsigned int countProfessors;
 
@@ -36,7 +36,7 @@ public:
     // Constructor
     Secretary();
     // Constructor with the department name as parameter
-    Secretary(string department, string departmentID, unsigned int yearsOfStudy);
+    Secretary(string department, string departmentID, unsigned int yearsOfStudy, unsigned int graduationEcts);
     // Destructor
     ~Secretary();
     // Copy Constructor
@@ -69,6 +69,8 @@ public:
     bool insertCourse(const Course &course);
     // Remove Course from Secretary
     bool removeCourse(const string &courseName);
+    // Transfer a Course to a new semester
+    bool transferCourse(const string &courseName, unsigned int newSemester);
     // Student registration to course
     bool registerStudentToCourse(const string &courseName, const string &id);
     // Unregister Student from Course
@@ -79,8 +81,14 @@ public:
     bool assignCourseToProfessor(const string &courseName, const string &id);
     // Cin grades input from professor
     void assignGrades(const string &courseName, const string &id);
-    // File input for grades from professor
-    void assignGrades(const string &courseName, const string &id);
+    // Function that checks if a student graduates
+    bool graduates(const string &id);
+    // Function that displays all students that graduate
+    void displayGraduates();
+    // Function that displays statistics for a professor's courses
+    void displayStatistics(const string &id);
+    // Function that displays a student's grades
+    void displayGrades(const string &id);
 
     /* Other Functions */
 
@@ -92,6 +100,22 @@ public:
         return yearsOfStudy;
     }
 
+    inline unsigned int getGraduationEcts() const {
+        return graduationEcts;
+    }
+
+    inline void setDepartment(const string &str) {
+        department = str;
+    }
+
+    inline void setYearsOfStudy(unsigned int n) {
+        yearsOfStudy = n;
+    }
+
+    inline void setGraduationEcts(unsigned int n) {
+        graduationEcts = n;
+    }
+
     inline string getFname(string id) const {
         try {
             if (this->search(id) == false)
@@ -100,6 +124,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getLname(string id) const {
@@ -110,6 +135,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getBirthDate(string id) const {
@@ -120,6 +146,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getGender(string id) const {
@@ -130,6 +157,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getNationality(string id) const {
@@ -140,6 +168,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getEmail(string id) const {
@@ -150,6 +179,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline string getPhone(string id) const {
@@ -160,6 +190,7 @@ public:
         } catch (...) {
             cerr << "Non existing ID." << endl;
         }
+        return "";
     }
 
     inline void setFname(string id, string fname) {
@@ -236,7 +267,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Professor))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Professor))
                 throw;
             dynamic_cast<Student *>(unidata[id])->setSemester(semester);
         } catch (int n) {
@@ -250,7 +282,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Professor))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Professor))
                 throw;
             dynamic_cast<Student *>(unidata[id])->setEcts(ects);
         } catch (int n) {
@@ -264,7 +297,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Professor))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Professor))
                 throw;
             dynamic_cast<Student *>(unidata[id])->setGPA(gpa);
         } catch (int n) {
@@ -278,7 +312,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Professor))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Professor))
                 throw;
             dynamic_cast<Student *>(unidata[id])->setStartingYear(memberSince);
         } catch (int n) {
@@ -292,7 +327,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Student))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Student))
                 throw;
             dynamic_cast<Professor *>(unidata[id])->setTrait(trait);
         } catch (int n) {
@@ -306,7 +342,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Student))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Student))
                 throw;
             dynamic_cast<Professor *>(unidata[id])->setRank(rank);
         } catch (int n) {
@@ -320,7 +357,8 @@ public:
         try {
             if (this->search(id) == false)
                 throw(0);
-            if (typeid(*unidata[id]) == typeid(Student))
+            Person *p = unidata.at(id);
+            if (typeid(*p) == typeid(Student))
                 throw;
             dynamic_cast<Professor *>(unidata[id])->setOfficeNo(officeNo);
         } catch (int n) {
@@ -330,5 +368,3 @@ public:
         }
     }
 };
-
-#endif

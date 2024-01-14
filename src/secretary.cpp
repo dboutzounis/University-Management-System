@@ -5,7 +5,7 @@
 #include <vector>
 
 // Constructing Secretary
-Secretary::Secretary() : department(""), departmentID(""), yearsOfStudy(0) {
+Secretary::Secretary() : department(""), departmentID(""), yearsOfStudy(0), graduationEcts(0) {
     currentYear = getCurrentYear();
     countProfessors = 0;
     countStudents = new unsigned int[currentYear + 1];
@@ -16,7 +16,7 @@ Secretary::Secretary() : department(""), departmentID(""), yearsOfStudy(0) {
 }
 
 // Constructing Secretary using the parameters on the initializer list
-Secretary::Secretary(string department, string departmentID, unsigned int yearsOfStudy) : department(department), departmentID(departmentID), yearsOfStudy(yearsOfStudy) {
+Secretary::Secretary(string department, string departmentID, unsigned int yearsOfStudy, unsigned int graduationEcts) : department(department), departmentID(departmentID), yearsOfStudy(yearsOfStudy), graduationEcts(graduationEcts) {
     currentYear = getCurrentYear();
     countProfessors = 0;
     countStudents = new unsigned int[currentYear + 1];
@@ -65,6 +65,7 @@ Secretary::Secretary(const Secretary &old_obj) {
         yearsOfStudy = old_obj.yearsOfStudy;
         currentYear = old_obj.currentYear;
         countProfessors = old_obj.countProfessors;
+        graduationEcts = old_obj.graduationEcts;
 
         countStudents = new unsigned int[currentYear + 1];
 
@@ -97,6 +98,7 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
         yearsOfStudy = old_obj.yearsOfStudy;
         currentYear = old_obj.currentYear;
         countProfessors = old_obj.countProfessors;
+        graduationEcts = old_obj.graduationEcts;
 
         countStudents = new unsigned int[currentYear + 1];
 
@@ -133,8 +135,9 @@ Secretary Secretary::operator+=(const Person &person) {
 Secretary Secretary::operator-=(const Person &person) {
     // Searching if the Person exists in order to remove him/her
     if (search(person.getID())) {
-        if (typeid(*unidata.at(person.getID())) == typeid(Student)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(person.getID());
+        if (typeid(*p) == typeid(Student)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++)
@@ -142,7 +145,7 @@ Secretary Secretary::operator-=(const Person &person) {
                         course[i]->removeStudent(person.getID());
             }
         } else {
-            map<unsigned int, vector<Course *>>::iterator iter;
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++)
@@ -164,6 +167,7 @@ ostream &operator<<(ostream &str, Secretary &obj) {
     str << endl;
     str << "Department ID: " << obj.departmentID << endl;
     str << "Years to complete " << obj.department << " :" << obj.yearsOfStudy << " years" << endl;
+    str << "Graduation ECTS:" << obj.graduationEcts << endl;
     str << endl;
 
     map<string, Person *>::iterator iter;
@@ -260,8 +264,9 @@ bool Secretary::insert(const Person &person) {
 // Removing a Person (that exists) with given id
 bool Secretary::remove(const string &id) {
     if (search(id)) {
-        if (typeid(unidata.at(id)) == typeid(Student)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Student)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++)
@@ -269,7 +274,7 @@ bool Secretary::remove(const string &id) {
                         course[i]->removeStudent(id);
             }
         } else {
-            map<unsigned int, vector<Course *>>::iterator iter;
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++)
@@ -291,7 +296,7 @@ int Secretary::size() {
 
 // Displaying a Course with given name
 void Secretary::displayCourse(const string &courseName) const {
-    map<unsigned int, vector<Course *>>::const_iterator const_iter;
+    map<unsigned int, vector<Course *> >::const_iterator const_iter;
     for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
         vector<Course *> course = const_iter->second;
         for (int i = 0; i < course.size(); i++) {
@@ -306,7 +311,7 @@ void Secretary::displayCourse(const string &courseName) const {
 
 // Seacrhing a Course with given name
 bool Secretary::searchCourse(const string &courseName) const {
-    map<unsigned int, vector<Course *>>::const_iterator const_iter;
+    map<unsigned int, vector<Course *> >::const_iterator const_iter;
     for (const_iter = curriculum.begin(); const_iter != curriculum.end(); ++const_iter) {
         vector<Course *> course = const_iter->second;
         for (int i = 0; i < course.size(); i++)
@@ -328,7 +333,7 @@ bool Secretary::insertCourse(const Course &course) {
 
 // Removing a Course from the Curriculum
 bool Secretary::removeCourse(const string &courseName) {
-    map<unsigned int, vector<Course *>>::iterator iter;
+    map<unsigned int, vector<Course *> >::iterator iter;
     for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
         vector<Course *> courses = iter->second;
         vector<Course *>::iterator c_iter;
@@ -336,7 +341,8 @@ bool Secretary::removeCourse(const string &courseName) {
             if ((*c_iter)->getName().compare(courseName) == 0) {
                 map<string, Person *>::iterator p_iter;
                 for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                    if (typeid(*p_iter->second) == typeid(Student)) {
+                    Person *p=p_iter->second;
+                    if (typeid(*p) == typeid(Student)) {
                         if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName))
                             dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
                     } else {
@@ -353,35 +359,40 @@ bool Secretary::removeCourse(const string &courseName) {
     return false;
 }
 
+// Transfer a Course to a new semester
+bool Secretary::transferCourse(const string &courseName, unsigned int newSemester) {
+    map<unsigned int, vector<Course *> >::iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        vector<Course *>::iterator c_iter;
+        for (c_iter = course.begin(); c_iter != course.end(); ++c_iter) {
+            if ((*c_iter)->getName().compare(courseName) == 0) {
+                Course *temp = *c_iter;
+                course.erase(c_iter);
+                course = curriculum.at(newSemester);
+                course.push_back(temp);
+                temp->setSemester(newSemester);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Registering a Student to a Course
 bool Secretary::registerStudentToCourse(const string &courseName, const string &id) {
     if (search(id)) {
-        if (typeid(*unidata.at(id)) == typeid(Student)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Student)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++) {
                     if (course[i]->getName().compare(courseName) == 0) {
                         if (dynamic_cast<Student *>(unidata.at(id))->getSemester() < course[i]->getSemester())
                             return false;
-                        course[i]->insertStudent(dynamic_cast<const Student &>(*unidata.at(id)));
-                        dynamic_cast<Student *>(unidata.at(id))->insertCourse(*course[i]);
-                        map<string, Person *>::iterator p_iter;
-                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                            if (p_iter->second->getID().compare(id) == 0)
-                                continue;
-                            if (typeid(*p_iter->second) == typeid(Student)) {
-                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            } else {
-                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            }
-                        }
+                        course[i]->insertStudent(dynamic_cast<Student *>(unidata.at(id)));
+                        dynamic_cast<Student *>(unidata.at(id))->insertCourse(course[i]);
                         return true;
                     }
                 }
@@ -394,30 +405,15 @@ bool Secretary::registerStudentToCourse(const string &courseName, const string &
 // Assigning a Course to a Professor
 bool Secretary::assignCourseToProfessor(const string &courseName, const string &id) {
     if (search(id)) {
-        if (typeid(*unidata.at(id)) == typeid(Professor)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Professor)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++) {
                     if (course[i]->getName().compare(courseName) == 0) {
-                        course[i]->insertProfessor(dynamic_cast<const Professor &>(*unidata.at(id)));
-                        dynamic_cast<Professor *>(unidata.at(id))->insertCourse(*course[i]);
-                        map<string, Person *>::iterator p_iter;
-                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                            if (p_iter->second->getID().compare(id) == 0)
-                                continue;
-                            if (typeid(*p_iter->second) == typeid(Student)) {
-                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            } else {
-                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            }
-                        }
+                        course[i]->insertProfessor(dynamic_cast<Professor *>(unidata.at(id)));
+                        dynamic_cast<Professor *>(unidata.at(id))->insertCourse(course[i]);
                         return true;
                     }
                 }
@@ -430,30 +426,15 @@ bool Secretary::assignCourseToProfessor(const string &courseName, const string &
 // Unregistering a Student from a Course
 bool Secretary::unregisterStudentFromCourse(const string &courseName, const string &id) {
     if (search(id)) {
-        if (typeid(*unidata.at(id)) == typeid(Student)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Student)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++) {
                     if (course[i]->getName().compare(courseName) == 0) {
                         course[i]->removeStudent(id);
                         dynamic_cast<Student *>(unidata.at(id))->removeCourse(courseName);
-                        map<string, Person *>::iterator p_iter;
-                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                            if (p_iter->second->getID().compare(id) == 0)
-                                continue;
-                            if (typeid(*p_iter->second) == typeid(Student)) {
-                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            } else {
-                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            }
-                        }
                         return true;
                     }
                 }
@@ -466,30 +447,15 @@ bool Secretary::unregisterStudentFromCourse(const string &courseName, const stri
 // Unassigning a Course from a Professor
 bool Secretary::unassignCourseFromProfessor(const string &courseName, const string &id) {
     if (search(id)) {
-        if (typeid(*unidata.at(id)) == typeid(Professor)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Professor)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++) {
                     if (course[i]->getName().compare(courseName) == 0) {
                         course[i]->removeProfessor(id);
                         dynamic_cast<Professor *>(unidata.at(id))->removeCourse(courseName);
-                        map<string, Person *>::iterator p_iter;
-                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                            if (p_iter->second->getID().compare(id) == 0)
-                                continue;
-                            if (typeid(*p_iter->second) == typeid(Student)) {
-                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            } else {
-                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            }
-                        }
                         return true;
                     }
                 }
@@ -503,8 +469,9 @@ bool Secretary::unassignCourseFromProfessor(const string &courseName, const stri
 void Secretary::assignGrades(const string &courseName, const string &id) {
     map<string, double> grades;
     if (search(id)) {
-        if (typeid(*unidata.at(id)) == typeid(Professor)) {
-            map<unsigned int, vector<Course *>>::iterator iter;
+        Person *p=unidata.at(id);
+        if (typeid(*p) == typeid(Professor)) {
+            map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
                 vector<Course *> course = iter->second;
                 for (int i = 0; i < course.size(); i++) {
@@ -513,31 +480,83 @@ void Secretary::assignGrades(const string &courseName, const string &id) {
                         map<string, double>::iterator g_iter;
                         cout << "Input grades for course " << course[i]->getName() << endl;
                         for (g_iter = grades.begin(); g_iter != grades.end(); ++g_iter) {
-                            cout << g_iter->first << ": ";
-                            cin >> g_iter->second;
-                        }
-                        course[i]->setGrades(grades);
-                        map<string, Person *>::iterator p_iter;
-                        for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                            if (p_iter->second->getID().compare(id) == 0)
-                                continue;
-                            if (typeid(*p_iter->second) == typeid(Student)) {
-                                if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Student *>(p_iter->second)->insertCourse(*course[i]);
-                                }
-                            } else {
-                                if (dynamic_cast<Professor *>(p_iter->second)->searchCourse(courseName)) {
-                                    dynamic_cast<Professor *>(p_iter->second)->removeCourse(courseName);
-                                    dynamic_cast<Professor *>(p_iter->second)->insertCourse(*course[i]);
-                                }
+                            do {
+                                cout << g_iter->first << ": ";
+                                cin >> g_iter->second;
+                                cout << "Invalid input" << endl;
+                            } while (g_iter->second < 0 || g_iter->second > 10);
+                            if (g_iter->second >= 5) {
+                                dynamic_cast<Student *>(unidata.at(g_iter->first))->setEcts(dynamic_cast<Student *>(unidata.at(g_iter->first))->getEcts() + course[i]->getEcts());
+                                dynamic_cast<Student *>(unidata.at(g_iter->first))->insertPassedCourse(course[i]);
                             }
                         }
+                        course[i]->setGrades(grades);
                     }
                 }
             }
+        } else
+            cout << "Not allowed to set grades as a student." << endl;
+    } else
+        cout << "Non existing ID given." << endl;
+}
+
+// Function that checks if a student graduates
+bool Secretary::graduates(const string &id) {
+    if (!search(id))
+        return false;
+    
+    Person *p=unidata.at(id);
+    if (typeid(*p) == typeid(Professor))
+        return false;
+
+    int mandatory = 0;
+    map<unsigned int, vector<Course *> >::iterator iter;
+    vector<Course *>::iterator c_iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        for (c_iter = iter->second.begin(); c_iter != iter->second.end(); ++c_iter) {
+            if ((*c_iter)->getCourseType().compare("Mandatory") == 0) {
+                mandatory++;
+            }
         }
     }
+
+    if (!dynamic_cast<Student *>(unidata.at(id))->mandatorypassed(mandatory))
+        return false;
+
+    if (dynamic_cast<Student *>(unidata.at(id))->getEcts() >= graduationEcts)
+        return true;
+
+    return false;
+}
+
+// Function that displays all students that graduate
+void Secretary::displayGraduates() {
+    map<string, Person *>::iterator iter;
+    for (iter = unidata.begin(); iter != unidata.end(); ++iter) {
+        if (graduates(iter->first)) {
+            cout << *dynamic_cast<Student *>(iter->second) << endl;
+        }
+    }
+}
+
+// Function that displays statistics for a professor's courses
+void Secretary::displayStatistics(const string &id) {
+    if (!search(id))
+        return;
+
+    Person *p=unidata.at(id);
+    if (typeid(Professor) == typeid(*p))
+        dynamic_cast<Professor *>(unidata.at(id))->displayStatistics();
+}
+
+// Function that displays a student's grades
+void Secretary::displayGrades(const string &id) {
+    if (!search(id))
+        return;
+
+    Person *p=unidata.at(id);
+    if (typeid(Student) == typeid(*p))
+        dynamic_cast<Student *>(unidata.at(id))->displayGrades();
 }
 
 // Getting current year

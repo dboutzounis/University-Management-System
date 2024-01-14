@@ -7,7 +7,7 @@ using namespace std;
 int main(void) {
     Student p;
     string department, departmentID, mode, id;
-    int yearsOfStudy;
+    int yearsOfStudy, ects;
     cout << "Enter the name of the department: ";
     getline(cin, department);
     cout << endl;
@@ -15,8 +15,10 @@ int main(void) {
     cin >> departmentID;
     cout << "Enter how many years of study the department has: ";
     cin >> yearsOfStudy;
+    cout << "Enter ects to graduate: ";
+    cin >> ects;
 
-    Secretary secretary(department, departmentID, yearsOfStudy), copiedSecretary;
+    Secretary secretary(department, departmentID, yearsOfStudy, ects), copiedSecretary;
     cout << "---WELCOME TO THE SECRETARY OF " << secretary.getDepartment() << "!---" << endl
          << endl;
 
@@ -90,10 +92,10 @@ int main(void) {
             break;
 
         case '7':
-            if (secretary.count() == 1)
-                cout << "The " << secretary.getDepartment() << " has " << secretary.count() << " person." << endl;
+            if (secretary.size() == 1)
+                cout << "The " << secretary.getDepartment() << " has " << secretary.size() << " person." << endl;
             else
-                cout << "The " << secretary.getDepartment() << " has " << secretary.count() << " people." << endl;
+                cout << "The " << secretary.getDepartment() << " has " << secretary.size() << " people." << endl;
             cout << endl;
             break;
 

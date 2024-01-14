@@ -1,12 +1,11 @@
 #pragma once
-#ifndef PROFESSOR_H
-#define PROFESSOR_H
 
-#include "course.h"
 #include "person.h"
 #include <iostream>
 #include <string>
 using namespace std;
+
+class Course;
 
 // Definition of Professor Class
 class Professor : public Person {
@@ -14,7 +13,7 @@ private:
     string trait;
     string rank;
     string officeNo;
-    vector<Course> courses;
+    vector<Course *> courses;
 
     // Helper functions
     void print(ostream &str) const;
@@ -42,7 +41,7 @@ public:
     // Search Course
     bool searchCourse(const string &courseName) const;
     // Insert Course
-    bool insertCourse(const Course &course);
+    bool insertCourse(Course *course);
     // Remove Course
     bool removeCourse(const string &courseName);
     // Display course statistics
@@ -74,5 +73,3 @@ public:
         this->officeNo = officeNo;
     }
 };
-
-#endif

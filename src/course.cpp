@@ -1,8 +1,7 @@
 #include "../include/course.h"
-#include "../include/professor.h"
-#include "../include/student.h"
 #include <iostream>
 #include <string>
+using namespace std;
 
 Course::Course() : name(""), ects(0), courseType(false), semester(0) {}
 
@@ -20,10 +19,14 @@ Course::Course(const Course &old_obj) {
     }
 }
 
-Course::~Course() {}
+Course::~Course() {
+    staff.clear();
+    students.clear();
+    grades.clear();
+}
 
-void Course::print(map<string, Professor> &m) {
-    map<string, Professor>::iterator iter;
+void Course::print(map<string, Professor *> &m) {
+    map<string, Professor *>::iterator iter;
     for (iter = m.begin(); iter != m.end(); ++iter) {
         cout << iter->second;
     }
@@ -64,25 +67,25 @@ void Course::display() const {
 
 void Course::displayProfessor(const string &id) const {
     if (searchProfessor(id)) {
-        staff.at(id).display();
+        staff.at(id)->display();
         return;
     }
     cout << "Professor not found." << endl;
 }
 
 bool Course::searchProfessor(const string &id) const {
-    map<string, Professor>::const_iterator const_iter;
+    map<string, Professor *>::const_iterator const_iter;
     for (const_iter = staff.begin(); const_iter != staff.end(); ++const_iter) {
-        if (const_iter->second.getID().compare(id) == 0) {
+        if (const_iter->second->getID().compare(id) == 0) {
             return true;
         }
     }
     return false;
 }
 
-bool Course::insertProfessor(const Professor &professor) {
-    if (!searchProfessor(professor.getID())) {
-        staff.insert(pair<string, Professor>(professor.getID(), professor));
+bool Course::insertProfessor(Professor *professor) {
+    if (!searchProfessor(professor->getID())) {
+        staff.insert(pair<string, Professor *>(professor->getID(), professor));
         return true;
     }
     return false;
@@ -98,7 +101,7 @@ bool Course::removeProfessor(const string &id) {
 
 void Course::displayStudent(const string &id) const {
     if (searchStudent(id)) {
-        students.at(id).display();
+        students.at(id)->display();
         cout << name << " grade is " << grades.at(id) << endl;
         return;
     }
@@ -106,19 +109,19 @@ void Course::displayStudent(const string &id) const {
 }
 
 bool Course::searchStudent(const string &id) const {
-    map<string, Student>::const_iterator const_iter;
+    map<string, Student *>::const_iterator const_iter;
     for (const_iter = students.begin(); const_iter != students.end(); ++const_iter) {
-        if (const_iter->second.getID().compare(id) == 0) {
+        if (const_iter->second->getID().compare(id) == 0) {
             return true;
         }
     }
     return false;
 }
 
-bool Course::insertStudent(const Student &student) {
-    if (!searchProfessor(student.getID())) {
-        students.insert(pair<string, Student>(student.getID(), student));
-        grades.insert(pair<string, double>(student.getID(), NAN));
+bool Course::insertStudent(Student *student) {
+    if (!searchProfessor(student->getID())) {
+        students.insert(pair<string, Student *>(student->getID(), student));
+        grades.insert(pair<string, double>(student->getID(), NAN));
         return true;
     }
     return false;

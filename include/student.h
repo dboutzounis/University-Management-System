@@ -1,13 +1,12 @@
 #pragma once
-#ifndef STUDENT_H
-#define STUDENT_H
 
-#include "course.h"
 #include "person.h"
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
+
+class Course;
 
 // Definition of Student class
 class Student : public Person {
@@ -16,7 +15,8 @@ private:
     unsigned int ects;
     double gpa;
     unsigned int memberSince;
-    vector<Course> courses;
+    vector<Course *> courses;
+    vector<Course *> passedCourses;
 
     // Helper functions
     void print(ostream &str) const;
@@ -44,9 +44,19 @@ public:
     // Search Course
     bool searchCourse(const string &courseName) const;
     // Insert Course
-    bool insertCourse(const Course &course);
+    bool insertCourse(Course *course);
     // Remove Course
     bool removeCourse(const string &courseName);
+    // Display Course
+    void displayPassedCourse(const string &courseName) const;
+    // Search Course
+    bool searchPassedCourse(const string &courseName) const;
+    // Insert Passed Course
+    bool insertPassedCourse(Course *course);
+    // Function that checks if a student has passed countMandatory mandatory courses
+    bool mandatorypassed(int countMandatory);
+    // Display Student grades
+    void displayGrades();
 
     /* Other Functions */
 
@@ -82,5 +92,3 @@ public:
         this->memberSince = memberSince;
     }
 };
-
-#endif

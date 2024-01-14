@@ -1,4 +1,5 @@
 #include "../include/student.h"
+#include "../include/course.h"
 #include "../include/extrafuncs.h"
 #include <iostream>
 #include <string>
@@ -33,8 +34,11 @@ Student::Student(const Student &old_obj) {
     }
 }
 
-// Destructing Person
-Student::~Student() {}
+// Destructing Student
+Student::~Student() {
+    courses.clear();
+    passedCourses.clear();
+}
 
 // Allocating memory for Student
 Person *Student::create() const {
@@ -114,10 +118,10 @@ void Student::display() const {
 
 // Displaying a Course from the vector of Student's Courses
 void Student::displayCourse(const string &courseName) const {
-    vector<Course>::const_iterator const_iter;
+    vector<Course *>::const_iterator const_iter;
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
-        if (const_iter->getName().compare(courseName) == 0) {
-            const_iter->display();
+        if ((*const_iter)->getName().compare(courseName) == 0) {
+            (*const_iter)->display();
             return;
         }
     }
@@ -126,9 +130,9 @@ void Student::displayCourse(const string &courseName) const {
 
 // Searching a Course in the vector of Student's Courses
 bool Student::searchCourse(const string &courseName) const {
-    vector<Course>::const_iterator const_iter;
+    vector<Course *>::const_iterator const_iter;
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
-        if (const_iter->getName().compare(courseName) == 0) {
+        if ((*const_iter)->getName().compare(courseName) == 0) {
             return true;
         }
     }
@@ -136,8 +140,8 @@ bool Student::searchCourse(const string &courseName) const {
 }
 
 // Inserting a Course in the vector of Student's Courses
-bool Student::insertCourse(const Course &course) {
-    if (!searchCourse(course.getName())) {
+bool Student::insertCourse(Course *course) {
+    if (!searchCourse(course->getName())) {
         courses.push_back(course);
         return true;
     }
@@ -146,12 +150,91 @@ bool Student::insertCourse(const Course &course) {
 
 // Removing a Course from the vector of Student's Courses
 bool Student::removeCourse(const string &courseName) {
-    vector<Course>::iterator iter;
+    vector<Course *>::iterator iter;
     for (iter = courses.begin(); iter != courses.end(); ++iter) {
-        if (iter->getName().compare(courseName) == 0) {
+        if ((*iter)->getName().compare(courseName) == 0) {
             courses.erase(iter);
             return true;
         }
     }
     return false;
+}
+
+// Displaying a Passed Course from the vector of Student's Courses
+void Student::displayPassedCourse(const string &courseName) const {
+    vector<Course *>::const_iterator const_iter;
+    for (const_iter = passedCourses.begin(); const_iter != passedCourses.end(); ++const_iter) {
+        if ((*const_iter)->getName().compare(courseName) == 0) {
+            (*const_iter)->display();
+            return;
+        }
+    }
+    cout << "Course not found." << endl;
+}
+
+// Searching a Passed Course in the vector of Student's Courses
+bool Student::searchPassedCourse(const string &courseName) const {
+    vector<Course *>::const_iterator const_iter;
+    for (const_iter = passedCourses.begin(); const_iter != passedCourses.end(); ++const_iter) {
+        if ((*const_iter)->getName().compare(courseName) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Inserting a Passed Course in the vector of Student's Courses
+bool Student::insertPassedCourse(Course *course) {
+    if (!searchPassedCourse(course->getName())) {
+        passedCourses.push_back(course);
+        vector<Course *>::iterator iter;
+        map<string, double> grades;
+        int ectssum = 0;
+        double sum = 0.0;
+        for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
+            ectssum += (*iter)->getEcts();
+        }
+        for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
+            grades = (*iter)->getGrades();
+            sum += ((*iter)->getEcts() * grades.at(id));
+        }
+        gpa = sum / ectssum;
+        return true;
+    }
+    return false;
+}
+
+// Function that checks if a student has passed countMandatory mandatory courses
+bool Student::mandatorypassed(int countMandatory) {
+    int count = 0;
+    vector<Course *>::iterator iter;
+    for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
+        if ((*iter)->getCourseType().compare("Mandatory") == 0) {
+            count++;
+        }
+    }
+    if (count == countMandatory)
+        return true;
+    return false;
+}
+
+// Displaying Student grades
+void Student::displayGrades() {
+    map<string, double> grades;
+    vector<Course *>::iterator iter;
+    cout << "Current semester grades:" << endl;
+    for (iter = courses.begin(); iter != courses.end(); ++iter) {
+        grades = (*iter)->getGrades();
+        cout << (*iter)->getName() << ": " << grades.at(id) << endl;
+    }
+
+    cout << "Previous years grades:" << endl;
+    for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
+        if (!searchCourse((*iter)->getName())) {
+            grades = (*iter)->getGrades();
+            cout << (*iter)->getName() << ": " << grades.at(id) << endl;
+        }
+    }
+
+    cout << "GPA: " << gpa << endl;
 }

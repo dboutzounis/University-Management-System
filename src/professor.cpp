@@ -1,4 +1,5 @@
 #include "../include/professor.h"
+#include "../include/course.h"
 #include "../include/extrafuncs.h"
 #include <cmath>
 #include <iostream>
@@ -34,7 +35,9 @@ Professor::Professor(const Professor &old_obj) {
 }
 
 // Destructing Professor
-Professor::~Professor() {}
+Professor::~Professor() {
+    courses.clear();
+}
 
 // Allocating memory for Professor
 Person *Professor::create() const {
@@ -111,10 +114,10 @@ void Professor::display() const {
 
 // Displaying a Course from the vector of Professor's Courses
 void Professor::displayCourse(const string &courseName) const {
-    vector<Course>::const_iterator const_iter;
+    vector<Course *>::const_iterator const_iter;
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
-        if (const_iter->getName().compare(courseName) == 0) {
-            const_iter->display();
+        if ((*const_iter)->getName().compare(courseName) == 0) {
+            (*const_iter)->display();
             return;
         }
     }
@@ -123,9 +126,9 @@ void Professor::displayCourse(const string &courseName) const {
 
 // Searching a Course in the vector of Professor's Courses
 bool Professor::searchCourse(const string &courseName) const {
-    vector<Course>::const_iterator const_iter;
+    vector<Course *>::const_iterator const_iter;
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
-        if (const_iter->getName().compare(courseName) == 0) {
+        if ((*const_iter)->getName().compare(courseName) == 0) {
             return true;
         }
     }
@@ -133,8 +136,8 @@ bool Professor::searchCourse(const string &courseName) const {
 }
 
 // Inserting a Course in the vector of Professor's Courses
-bool Professor::insertCourse(const Course &course) {
-    if (!searchCourse(course.getName())) {
+bool Professor::insertCourse(Course *course) {
+    if (!searchCourse(course->getName())) {
         courses.push_back(course);
         return true;
     }
@@ -143,9 +146,9 @@ bool Professor::insertCourse(const Course &course) {
 
 // Removing a Course from the vector of Professor's Courses
 bool Professor::removeCourse(const string &courseName) {
-    vector<Course>::iterator iter;
+    vector<Course *>::iterator iter;
     for (iter = courses.begin(); iter != courses.end(); ++iter) {
-        if (iter->getName().compare(courseName) == 0) {
+        if ((*iter)->getName().compare(courseName) == 0) {
             courses.erase(iter);
             return true;
         }
@@ -155,14 +158,14 @@ bool Professor::removeCourse(const string &courseName) {
 
 // Displaying Statistics of all Courses of current semester
 void Professor::displayStatistics() const {
-    vector<Course>::const_iterator const_iter;
+    vector<Course *>::const_iterator const_iter;
     map<string, double> grades;
     map<string, double>::const_iterator g_iter;
     cout << "Course statistics of professor " << lname << " " << fname << endl;
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
-        grades = const_iter->getGrades();
+        grades = (*const_iter)->getGrades();
         if (grades.size() == 0) {
-            cout << "No students participated in " << const_iter->getName() << "." << endl;
+            cout << "No students participated in " << (*const_iter)->getName() << "." << endl;
             continue;
         }
         double sum = 0.0;
@@ -173,7 +176,7 @@ void Professor::displayStatistics() const {
             sum += g_iter->second;
             distribution[static_cast<int>(round(g_iter->second))]++;
         }
-        cout << "Statistics of course " << const_iter->getName() << ":" << endl;
+        cout << "Statistics of course " << (*const_iter)->getName() << ":" << endl;
         cout << "Students that took part in the exams were " << grades.size() << "." << endl;
         cout << "Success rate: " << (static_cast<double>(count) / grades.size()) * 100 << "%." << endl;
         cout << "Fail rate: " << 100 - (static_cast<double>(count) / grades.size()) * 100 << "%." << endl;
