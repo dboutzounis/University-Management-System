@@ -38,9 +38,9 @@ ostream &operator<<(ostream &str, Course &obj) {
     str << "Semester: " << obj.semester << endl;
     str << "ECTS: " << obj.ects << endl;
     if (obj.courseType) {
-        str << "Mandatory course" << endl;
+        str << "Type: Mandatory" << endl;
     } else {
-        str << "Optional course" << endl;
+        str << "Type: Optional" << endl;
     }
     str << "Teaching staff:" << endl;
     obj.print(obj.staff);

@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 // Constructing Secretary
 Secretary::Secretary() : department(""), departmentID(""), yearsOfStudy(0), graduationEcts(0) {
@@ -33,7 +35,16 @@ Secretary::~Secretary() {
     for (iter = unidata.begin(); iter != unidata.end(); ++iter)
         delete iter->second;
     unidata.clear();
-
+    map<unsigned int, vector<Course *> >::iterator m_iter;
+    for(m_iter=curriculum.begin();m_iter!=curriculum.end();++m_iter){
+        vector<Course *> semester=m_iter->second;
+        vector<Course *>::iterator c_iter;
+        for(c_iter=semester.begin();c_iter!=semester.end();++c_iter){
+            delete *c_iter;
+        }
+        semester.clear();
+    }
+    curriculum.clear();
     delete[] countStudents;
 }
 
@@ -50,6 +61,16 @@ Secretary::Secretary(const Secretary &old_obj) {
         for (iter = unidata.begin(); iter != unidata.end(); ++iter)
             delete iter->second;
         unidata.clear();
+        map<unsigned int, vector<Course *> >::iterator m_iter;
+        for(m_iter=curriculum.begin();m_iter!=curriculum.end();++m_iter){
+            vector<Course *> semester=m_iter->second;
+            vector<Course *>::iterator c_iter;
+            for(c_iter=semester.begin();c_iter!=semester.end();++c_iter){
+                delete *c_iter;
+            }
+            semester.clear();
+        }
+        curriculum.clear();
 
         delete[] countStudents;
 
@@ -83,6 +104,16 @@ Secretary Secretary::operator=(const Secretary &old_obj) {
         for (iter = unidata.begin(); iter != unidata.end(); ++iter)
             delete iter->second;
         unidata.clear();
+        map<unsigned int, vector<Course *> >::iterator m_iter;
+        for(m_iter=curriculum.begin();m_iter!=curriculum.end();++m_iter){
+            vector<Course *> semester=m_iter->second;
+            vector<Course *>::iterator c_iter;
+            for(c_iter=semester.begin();c_iter!=semester.end();++c_iter){
+                delete *c_iter;
+            }
+            semester.clear();
+        }
+        curriculum.clear();
 
         delete[] countStudents;
 
@@ -135,7 +166,7 @@ Secretary Secretary::operator+=(const Person &person) {
 Secretary Secretary::operator-=(const Person &person) {
     // Searching if the Person exists in order to remove him/her
     if (search(person.getID())) {
-        Person *p=unidata.at(person.getID());
+        Person *p = unidata.at(person.getID());
         if (typeid(*p) == typeid(Student)) {
             map<unsigned int, vector<Course *> >::iterator iter;
             for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
@@ -170,12 +201,25 @@ ostream &operator<<(ostream &str, Secretary &obj) {
     str << "Graduation ECTS:" << obj.graduationEcts << endl;
     str << endl;
 
+    str << "University Members:" << endl << endl;
     map<string, Person *>::iterator iter;
     int c = 0;
     for (iter = obj.unidata.begin(); iter != obj.unidata.end(); ++iter) {
         str << endl;
         str << "Person " << ++c << ":" << endl;
         str << *iter->second << endl;
+    }
+
+    str << endl << "Curriculum:" << endl << endl;
+    map<unsigned int, vector <Course *> >::iterator m_iter;
+    for(m_iter = obj.curriculum.begin(); m_iter != obj.curriculum.end(); ++m_iter){
+        vector<Course *>::iterator v_iter;
+        vector<Course *> course = m_iter->second;
+        str << "Semester " << m_iter->first << ":" << endl;
+        for(v_iter = course.begin(); v_iter != course.end(); ++v_iter) {
+            str << **v_iter << endl;
+        }
+        str << endl;
     }
 
     return str;
@@ -190,7 +234,7 @@ istream &operator>>(istream &str, Secretary &obj) {
 
     for (int i = 0; i < countPeople; i++) {
         char type;
-        cout << "Type 's' or 'S' to add a student, else type 'p' or 'P' to add a proffesor: ";
+        cout << "Type 's' or 'S' to add a student, else type 'p' or 'P' to add a professor: ";
         do {
             str >> type;
             if (type != 's' && type != 'S' && type != 'p' && type != 'P')
@@ -247,6 +291,10 @@ bool Secretary::insert(const Person &person) {
         p->setID(generateID(*p));
         // Inserting the new Person to the unidata map
         unidata.insert(pair<string, Person *>(p->getID(), p));
+        if (typeid(person) == typeid(Student))
+            countStudents[dynamic_cast<const Student &>(person).getStartingYear()]++;
+        else
+            countProfessors++;
         return true;
     } else {
         if (!search(person.getID())) {
@@ -254,6 +302,10 @@ bool Secretary::insert(const Person &person) {
             Person *p = allocatePerson(person);
             // Inserting the new Person to the unidata map
             unidata.insert(pair<string, Person *>(p->getID(), p));
+            if (typeid(person) == typeid(Student))
+                countStudents[dynamic_cast<const Student &>(person).getStartingYear()]++;
+            else
+                countProfessors++;
             return true;
         }
     }
@@ -324,6 +376,12 @@ bool Secretary::searchCourse(const string &courseName) const {
 // Inserting a Course in the curriculum
 bool Secretary::insertCourse(const Course &course) {
     if (!searchCourse(course.getName())) {
+        map<unsigned int, vector<Course *> >::iterator iter;
+        iter = curriculum.find(course.getSemester());
+        if (iter == curriculum.end()) {
+            vector<Course *> courseV;
+            curriculum.insert(pair<unsigned int, vector<Course *> >(course.getSemester(), courseV));
+        }
         Course *c = new Course(course);
         curriculum.at(course.getSemester()).push_back(c);
         return true;
@@ -341,7 +399,7 @@ bool Secretary::removeCourse(const string &courseName) {
             if ((*c_iter)->getName().compare(courseName) == 0) {
                 map<string, Person *>::iterator p_iter;
                 for (p_iter = unidata.begin(); p_iter != unidata.end(); ++p_iter) {
-                    Person *p=p_iter->second;
+                    Person *p = p_iter->second;
                     if (typeid(*p) == typeid(Student)) {
                         if (dynamic_cast<Student *>(p_iter->second)->searchCourse(courseName))
                             dynamic_cast<Student *>(p_iter->second)->removeCourse(courseName);
@@ -559,6 +617,114 @@ void Secretary::displayGrades(const string &id) {
         dynamic_cast<Student *>(unidata.at(id))->displayGrades();
 }
 
+// FUnction that parses input info and inserts it to the Secretary
+void Secretary::parseInput(const string &path) {
+    ifstream database;
+    
+    try {
+        database.open(path);
+        if (!database.is_open())
+            throw;
+    } catch (...) {
+        cerr << "Error opening input file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    string line;
+    if (getline(database,line)){
+        vector<string> dataList;
+        string token;
+        stringstream str(line);
+
+        while(getline(str, token, ' '))
+            dataList.push_back(token);
+
+        if (dataList.size() != 5){
+            cerr << "Error invalid input of Secretary in file." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (dataList[0].compare("Secretary") == 0){
+            department = dataList[1];
+            departmentID = dataList[2];
+            yearsOfStudy = stoi(dataList[3]); 
+            graduationEcts = stoi(dataList[4]);
+        }
+        else{
+           cerr << "Error invalid input of Secretary in file." << endl;
+           exit(EXIT_FAILURE); 
+        }
+    }
+
+    while(getline(database, line)) {
+        vector<string> dataList;
+        string token;
+        stringstream str(line);
+
+        while(getline(str, token, ' '))
+            dataList.push_back(token);
+
+        if(dataList[0].compare("Student") == 0){
+            if (dataList.size() != 14){
+                cerr << "Error invalid input of Student in file." << endl;
+                exit(EXIT_FAILURE);
+            }
+            unsigned int day = stoi(dataList[3]);
+            unsigned int month = stoi(dataList[4]);
+            unsigned int year = stoi(dataList[5]);
+            char gender = dataList[6].at(0);
+            unsigned int semester = stoi(dataList[10]);
+            unsigned int ects = stoi(dataList[11]);
+            double gpa = stod(dataList[12]);
+            unsigned int memberSince = stoi(dataList[13]);
+            Student s = Student(dataList[1],dataList[2],day,month,year,gender,dataList[7],dataList[8],dataList[9],semester,ects,gpa,memberSince);
+            insert(s);
+        }
+        else if(dataList[0].compare("Professor") == 0){
+            if (dataList.size() != 13){
+                cerr << "Error invalid input of Professor in file." << endl;
+                exit(EXIT_FAILURE);
+            }
+            unsigned int day = stoi(dataList[3]);
+            unsigned int month = stoi(dataList[4]);
+            unsigned int year = stoi(dataList[5]);
+            char gender = dataList[6].at(0);
+            Professor p = Professor(dataList[1],dataList[2],day,month,year,gender,dataList[7],dataList[8],dataList[9],dataList[10],dataList[11],dataList[12]);
+            insert(p);
+        }
+        else if (dataList[0].compare("Course") == 0){
+            if (dataList.size() != 5){
+                cerr << "Error invalid input of Course in file." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            unsigned int semester = stoi(dataList[2]);
+            unsigned int ects = stoi(dataList[3]);
+            bool mandatory;
+
+            if (dataList[4].compare("Mandatory") == 0){
+                mandatory = true;
+            }
+            else if (dataList[4].compare("Optional") == 0) {
+                mandatory = false;
+            }
+            else{
+                cerr << "Error invalid input of Course in file." << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            Course c = Course(dataList[1],semester,ects,mandatory);
+            insertCourse(c);
+        }
+        else{
+            cerr << "Error invalid input in file." << endl;
+            exit(EXIT_FAILURE);
+        }
+        dataList.clear();
+    }
+    database.close();
+}
+
 // Getting current year
 unsigned int Secretary::getCurrentYear() {
     // Get the current time
@@ -597,4 +763,91 @@ string Secretary::generateID(const Person &person) {
         else
             return departmentID + to_string(c);
     }
+}
+
+unsigned int Secretary::getCourseEcts(const string &courseName) const {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                return course[i]->getEcts();
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+    return 0;
+}
+
+unsigned int Secretary::getCourseSemester(const string &courseName) const {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                return course[i]->getSemester();
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+    return 0;    
+}
+
+string Secretary::getCourseType(const string &courseName) const {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                return course[i]->getCourseType();
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+    return "";    
+}
+
+void Secretary::setCourseName(const string &courseName, const string &newCourseName) {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                course[i]->setName(newCourseName);
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+}
+
+void Secretary::setCourseEcts(const string &courseName, unsigned int newEcts) {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                course[i]->setEcts(newEcts);
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+}
+
+void Secretary::setCourseSemester(const string &courseName, unsigned int newSemester) {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                course[i]->setSemester(newSemester);
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
+}
+
+void Secretary::setCourseType(const string &courseName, bool newCourseType) {
+    map<unsigned int, vector<Course *> >::const_iterator iter;
+    for (iter = curriculum.begin(); iter != curriculum.end(); ++iter) {
+        vector<Course *> course = iter->second;
+        for (int i = 0; i < course.size(); i++) {
+            if (course[i]->getName().compare(courseName) == 0)
+                course[i]->setEcts(newCourseType);
+        }
+    }
+    cerr << "Non existing Course Name." << endl;
 }

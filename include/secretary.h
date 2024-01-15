@@ -89,8 +89,19 @@ public:
     void displayStatistics(const string &id);
     // Function that displays a student's grades
     void displayGrades(const string &id);
+    // Function that parses input info and inserts it to the Secretary
+    void parseInput(const string &path);
+
 
     /* Other Functions */
+
+    unsigned int getCourseEcts(const string &courseName) const;
+    unsigned int getCourseSemester(const string &courseName) const;
+    string getCourseType(const string &courseName) const;
+    void setCourseName(const string &courseName, const string &newCourseName);
+    void setCourseEcts(const string &courseName, unsigned int newEcts);
+    void setCourseSemester(const string &courseName, unsigned int newSemester);
+    void setCourseType(const string &courseName, bool newCourseType);
 
     inline string getDepartment() const {
         return department;
