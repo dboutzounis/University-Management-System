@@ -7,8 +7,8 @@ using namespace std;
 int main(int argc, char *argv[]) {
     try {
         if (argc != 2)
-            throw;
-    } catch (...) {
+            throw(1);
+    } catch (int n) {
         cerr << "Usage: ./main <input file>" << endl;
         exit(EXIT_FAILURE);
     }
@@ -433,7 +433,7 @@ int main(int argc, char *argv[]) {
             break;
 
         case 6:
-            //###########################################################################
+            // ###########################################################################
             break;
 
         case 7:
