@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <iomanip>
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -23,30 +24,34 @@ int main(int argc, char *argv[]) {
 
     secretary.parseInput(argv[1]);
 
-    cout << "---------- WELCOME TO THE SECRETARY OF " << secretary.getDepartment() << "! ----------" << endl
-         << endl;
+    cout << setprecision(3) << "---------- WELCOME TO THE SECRETARY OF " << secretary.getDepartment() << "! ----------" << endl;
 
     while (true) {
         // Displaying the available secretary options
+        cout << endl;
         cout << "----- SECRETARY MENU -----" << endl;
         cout << "0.Exit" << endl;
         cout << "1.Insert/Modify/Remove Professor" << endl;
         cout << "2.Insert/Modify/Remove Student" << endl;
         cout << "3.Insert/Modify/Remove Course" << endl;
-        cout << "4.Assign Course to Professors" << endl;
+        cout << "4.Assign Course to Professor" << endl;
         cout << "5.Register Student to Course" << endl;
         cout << "6.Display and Save the Students who Passed a Particular Course in a Semester " << endl;
         cout << "7.Display Professor Statistics" << endl;
         cout << "8.Display Student Statistics" << endl;
         cout << "9.Display Students who Graduate" << endl;
+        cout << "10.Assign Grades for a particular Course" << endl;
+        cout << "11.Unregister a Student from a Course" << endl;
+        cout << "12.Unassign course from a Professor" << endl;
+        cout << "13.Secretary Display" << endl;
 
         // Checking if user gave valid input
         do {
             cout << "> Enter mode: ";
             cin >> mode;
-            if (mode < 0 || mode > 9)
+            if (mode < 0 || mode > 13)
                 cout << "Invalid input, try again." << endl;
-        } while (mode < 0 || mode > 9);
+        } while (mode < 0 || mode > 13);
 
         switch (mode) {
         case 1:
@@ -66,7 +71,7 @@ int main(int argc, char *argv[]) {
             switch (submode) {
             case 1:
                 cin >> professor;
-                secretary += professor;
+                secretary.insert(professor);
                 break;
 
             case 2:
@@ -210,7 +215,7 @@ int main(int argc, char *argv[]) {
             switch (submode) {
             case 1:
                 cin >> student;
-                secretary += student;
+                secretary.insert(student);
                 break;
 
             case 2:
@@ -366,7 +371,7 @@ int main(int argc, char *argv[]) {
                 switch (edit_mode) {
                 case 1:
                     cout << "Give Course's Name: ";
-                    cin >> id;
+                    cin >> str;
                     cout << "Give the new Course Name: ";
                     cin >> str;
                     secretary.setCourseName(id, str);
@@ -374,10 +379,12 @@ int main(int argc, char *argv[]) {
 
                 case 2:
                     cout << "Give Course's Name: ";
-                    cin >> id;
+                    cin >> str;
                     cout << "Give the new Semester: ";
                     cin >> semester;
-                    secretary.setCourseSemester(id, semester);
+                    if (!secretary.transferCourse(str,semester)){
+                        cout << "Invalid semester" << endl;
+                    }
                     break;
 
                 case 3:
@@ -433,7 +440,9 @@ int main(int argc, char *argv[]) {
             break;
 
         case 6:
-            // ###########################################################################
+            cout << "Give Course's Name: ";
+            cin >> str;
+            secretary.displaySaveStudentsWhoPassedCourse(str);
             break;
 
         case 7:
@@ -452,11 +461,39 @@ int main(int argc, char *argv[]) {
             cout << "Students that can graduate:" << endl;
             secretary.displayGraduates();
             break;
+        
+        case 10:
+            cout << "Give Professor's ID: ";
+            cin >> id;
+            cout << "Give the Course's name: ";
+            cin >> str;
+            secretary.assignGrades(str,id);
+            break;
+
+        case 11:
+            cout << "Give the Student's ID: ";
+            cin >> id;
+            cout << "Give the Course's Name: ";
+            cin >> str;
+            secretary.unregisterStudentFromCourse(str,id);
+            break;
+
+        case 12:
+            cout << "Give the Professor's ID: ";
+            cin >> id;
+            cout << "Give the Course's Name: ";
+            cin >> str;
+            secretary.unassignCourseFromProfessor(str,id);
+            break;
+        
+        case 13:
+            cout << secretary;
+            break;
 
         default:
             cout << "Exited secretary of " << secretary.getDepartment() << "." << endl;
-            exit(EXIT_SUCCESS);
-            break;
+            secretary.updateFile(argv[1]);
+            return 0;
         }
     }
 

@@ -20,7 +20,7 @@ private:
     map<string, double> grades;
 
     // Helper functions
-    void print(map<string, Professor *> &v);
+    void print(ostream &str);
 
 public:
     // Constructor

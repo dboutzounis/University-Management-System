@@ -76,6 +76,10 @@ public:
         return memberSince;
     }
 
+    inline vector<Course *> getPassedCourses() const {
+        return passedCourses;
+    }
+
     inline void setSemester(unsigned int semester) {
         this->semester = semester;
     }

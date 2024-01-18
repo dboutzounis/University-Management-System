@@ -8,17 +8,33 @@ using namespace std;
 int Person::count = 0;
 
 // Constructing Person
-Person::Person() : fname(""), lname(""), day(0), month(0), year(0), gender('\0'), nationality(""), email(""), phone(""), id("") {
+Person::Person() : fname(""), lname(""), day(0), month(0), year(0), gender('\0'), nationality(""), email(""), phone(""), id("0") {
     count++;
 }
 
 // Constructing Person using the parameters on the initializer list
-Person::Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id("") {
+Person::Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id("0") {
+    try {
+        if (!isValidDate(day, month, year))
+            throw(0);
+    } catch (...) {
+        cerr << "Error invalid birthdate given." << endl;
+        exit(EXIT_FAILURE);
+    }
+
     count++;
 }
 
 // Constructing Person using the parameters on the initializer list
 Person::Person(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id) : fname(fname), lname(lname), day(day), month(month), year(year), gender(gender), nationality(nationality), email(email), phone(phone), id(id) {
+    try {
+        if (!isValidDate(day, month, year))
+            throw(0);
+    } catch (...) {
+        cerr << "Error invalid birthdate given." << endl;
+        exit(EXIT_FAILURE);
+    }
+    
     count++;
 }
 
@@ -51,11 +67,11 @@ ostream &operator<<(ostream &str, Person &obj) {
 
 // Passing Person data to the input stream (read)
 istream &operator>>(istream &str, Person &obj) {
-    cout << "Input your first name: ";
+    cout << "Input first name: ";
     str >> obj.fname;
-    cout << "Input your last name: ";
+    cout << "Input last name: ";
     str >> obj.lname;
-    cout << "Input your birth date: " << endl;
+    cout << "Input birth date: " << endl;
     do {
         cout << "Day: ";
         str >> obj.day;
@@ -66,15 +82,15 @@ istream &operator>>(istream &str, Person &obj) {
         if (!isValidDate(obj.day, obj.month, obj.year))
             cout << "Invalid date, try again." << endl;
     } while (!isValidDate(obj.day, obj.month, obj.year));
-    cout << "Input your gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
+    cout << "Input gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
     str >> obj.gender;
-    cout << "Input your nationality: ";
+    cout << "Input nationality: ";
     str >> obj.nationality;
-    cout << "Input your e-mail: ";
+    cout << "Input e-mail: ";
     str >> obj.email;
-    cout << "Input your phone number: ";
+    cout << "Input phone number: ";
     str >> obj.phone;
-    cout << "Input your ID: ";
+    cout << "Input ID: ";
     str >> obj.id;
 
     return str;

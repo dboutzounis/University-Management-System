@@ -9,7 +9,7 @@ bool isValidDate(unsigned int day, unsigned int month, unsigned int year) {
     if (year < 0 || month < 1 || month > 12 || day < 1)
         return false;
 
-    int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    unsigned int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     // Adjust February for leap years
     if (month == 2 && isLeapYear(year))

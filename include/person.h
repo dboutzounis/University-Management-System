@@ -50,16 +50,16 @@ public:
     }
 
     inline string getBirthDate() const {
-        return to_string(day) + "/" + to_string(month) + "/" + to_string(year);
+        return to_string(day) + " " + to_string(month) + " " + to_string(year);
     }
 
     inline string getGender() const {
         if (gender == 'M' || gender == 'm')
-            return "Male";
+            return "M";
         else if (gender == 'F' || gender == 'f')
-            return "Female";
+            return "F";
 
-        return "Other";
+        return "O";
     }
 
     inline string getNationality() const {

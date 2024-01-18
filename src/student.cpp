@@ -9,10 +9,10 @@ using namespace std;
 Student::Student() : Person(), semester(0), ects(0), gpa(0), memberSince(0) {}
 
 // Constructing Student using the parameters on the initializer list
-Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone), semester(1), ects(0), gpa(gpa), memberSince(memberSince) {}
+Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone), semester(semester), ects(ects), gpa(gpa), memberSince(memberSince) {}
 
 // Constructing Student using the parameters on the initializer list
-Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), semester(1), ects(0), gpa(gpa), memberSince(memberSince) {}
+Student::Student(string fname, string lname, unsigned int day, unsigned int month, unsigned int year, char gender, string nationality, string email, string phone, string id, unsigned int semester, unsigned int ects, double gpa, unsigned int memberSince) : Person(fname, lname, day, month, year, gender, nationality, email, phone, id), semester(semester), ects(ects), gpa(gpa), memberSince(memberSince) {}
 
 // Copy constructing Student object
 Student::Student(const Student &old_obj) {
@@ -74,11 +74,11 @@ ostream &operator<<(ostream &str, Student &obj) {
 
 // Passing Student data to the input stream (read)
 istream &operator>>(istream &str, Student &obj) {
-    cout << "Input your first name: ";
+    cout << "Input first name: ";
     str >> obj.fname;
-    cout << "Input your last name: ";
+    cout << "Input last name: ";
     str >> obj.lname;
-    cout << "Input your birth date: " << endl;
+    cout << "Input birth date: " << endl;
     do {
         cout << "Day: ";
         str >> obj.day;
@@ -89,23 +89,17 @@ istream &operator>>(istream &str, Student &obj) {
         if (!isValidDate(obj.day, obj.month, obj.year))
             cout << "Invalid date, try again." << endl;
     } while (!isValidDate(obj.day, obj.month, obj.year));
-    cout << "Input your gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
+    cout << "Input gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
     str >> obj.gender;
-    cout << "Input your nationality: ";
+    cout << "Input nationality: ";
     str >> obj.nationality;
-    cout << "Input your e-mail: ";
+    cout << "Input e-mail: ";
     str >> obj.email;
-    cout << "Input your phone number: ";
+    cout << "Input phone number: ";
     str >> obj.phone;
-    cout << "Input your ID: ";
-    str >> obj.id;
-    cout << "Input your current semester: ";
+    cout << "Input current semester: ";
     str >> obj.semester;
-    cout << "Input your ECTS: ";
-    str >> obj.ects;
-    cout << "Input your GPA: ";
-    str >> obj.gpa;
-    cout << "Input your starting year: ";
+    cout << "Input starting year: ";
     str >> obj.memberSince;
 
     return str;
@@ -192,12 +186,11 @@ bool Student::insertPassedCourse(Course *course) {
         int ectssum = 0;
         double sum = 0.0;
         for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
-            ectssum += (*iter)->getEcts();
-        }
-        for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
             grades = (*iter)->getGrades();
             sum += ((*iter)->getEcts() * grades.at(id));
+            ectssum += (*iter)->getEcts();
         }
+        ects = ectssum;
         gpa = sum / ectssum;
         return true;
     }
@@ -228,7 +221,7 @@ void Student::displayGrades() {
         cout << (*iter)->getName() << ": " << grades.at(id) << endl;
     }
 
-    cout << "Previous years grades:" << endl;
+    cout << "\nPrevious years grades:" << endl;
     for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
         if (!searchCourse((*iter)->getName())) {
             grades = (*iter)->getGrades();
@@ -236,5 +229,5 @@ void Student::displayGrades() {
         }
     }
 
-    cout << "GPA: " << gpa << endl;
+    cout << "\nGPA: " << gpa << endl;
 }

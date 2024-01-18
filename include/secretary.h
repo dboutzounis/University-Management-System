@@ -24,7 +24,7 @@ private:
     unsigned int yearsOfStudy;
     unsigned int currentYear;
     unsigned int graduationEcts;
-    unsigned int *countStudents;
+    vector<unsigned int> countStudents;
     unsigned int countProfessors;
 
     // Helper functions
@@ -56,7 +56,7 @@ public:
     // Search Person in the map
     bool search(const string &id) const;
     // Insert Person in the map
-    bool insert(const Person &person);
+    string insert(const Person &person);
     // Remove Person from the map
     bool remove(const string &id);
     // Unidata map size
@@ -77,10 +77,12 @@ public:
     bool unregisterStudentFromCourse(const string &courseName, const string &id);
     // Unassign Course from Professor
     bool unassignCourseFromProfessor(const string &courseName, const string &id);
-    // Course assignment to professor
+    // Course assignment to Professor
     bool assignCourseToProfessor(const string &courseName, const string &id);
-    // Cin grades input from professor
+    // Cin grades input from Professor
     void assignGrades(const string &courseName, const string &id);
+    // Display and Save Students who passed a certain Course
+    void displaySaveStudentsWhoPassedCourse(const string &courseName);
     // Function that checks if a student graduates
     bool graduates(const string &id);
     // Function that displays all students that graduate
@@ -91,6 +93,8 @@ public:
     void displayGrades(const string &id);
     // Function that parses input info and inserts it to the Secretary
     void parseInput(const string &path);
+    // Function that updates the input file based on the changes user made
+    void updateFile(const string &path);
 
 
     /* Other Functions */

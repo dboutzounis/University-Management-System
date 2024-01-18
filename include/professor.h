@@ -3,6 +3,7 @@
 #include "person.h"
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 class Course;
@@ -59,6 +60,10 @@ public:
 
     inline string getOfficeNo() const {
         return officeNo;
+    }
+
+    inline vector<Course *> getCourses() const {
+        return courses;
     }
 
     inline void setTrait(const string &trait) {

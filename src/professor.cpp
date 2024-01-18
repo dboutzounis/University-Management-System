@@ -72,11 +72,11 @@ ostream &operator<<(ostream &str, Professor &obj) {
 
 // Passing Student data to the input stream (read)
 istream &operator>>(istream &str, Professor &obj) {
-    cout << "Input your first name: ";
+    cout << "Input first name: ";
     str >> obj.fname;
-    cout << "Input your last name: ";
+    cout << "Input last name: ";
     str >> obj.lname;
-    cout << "Input your birth date: " << endl;
+    cout << "Input birth date: " << endl;
     do {
         cout << "Day: ";
         str >> obj.day;
@@ -87,21 +87,21 @@ istream &operator>>(istream &str, Professor &obj) {
         if (!isValidDate(obj.day, obj.month, obj.year))
             cout << "Invalid date, try again." << endl;
     } while (!isValidDate(obj.day, obj.month, obj.year));
-    cout << "Input your gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
+    cout << "Input gender ('M' or 'm' for male, 'F' or 'f' for female and 'O' or 'o' for other): ";
     str >> obj.gender;
-    cout << "Input your nationality: ";
+    cout << "Input nationality: ";
     str >> obj.nationality;
-    cout << "Input your e-mail: ";
+    cout << "Input e-mail: ";
     str >> obj.email;
-    cout << "Input your phone number: ";
+    cout << "Input phone number: ";
     str >> obj.phone;
-    cout << "Input your ID: ";
+    cout << "Input ID: ";
     str >> obj.id;
-    cout << "Input your trait: ";
+    cout << "Input trait: ";
     str >> obj.trait;
-    cout << "Input your rank: ";
+    cout << "Input rank: ";
     str >> obj.rank;
-    cout << "Input your office number: ";
+    cout << "Input office number: ";
     str >> obj.officeNo;
 
     return str;
@@ -161,7 +161,38 @@ void Professor::displayStatistics() const {
     vector<Course *>::const_iterator const_iter;
     map<string, double> grades;
     map<string, double>::const_iterator g_iter;
-    cout << "Course statistics of professor " << lname << " " << fname << endl;
+    
+    cout << "Statistics of Professor " << lname << " " << fname << endl;
+    cout << "Current Semester Course Statistics:" << endl; 
+
+    for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
+        grades = (*const_iter)->getGrades();
+        double sum = 0.0;
+        int count = 0, countP = 0, distribution[11] = {0};
+        for (g_iter = grades.begin(); g_iter != grades.end(); ++g_iter) {
+            if((*const_iter)->searchStudent(g_iter->first)){    
+                count++;
+                if (g_iter->second >= 5.0)
+                    countP++;
+                sum += g_iter->second;
+                distribution[static_cast<int>(round(g_iter->second))]++;
+            }
+        }
+        if (count == 0) {
+            cout << "No students participated in " << (*const_iter)->getName() << " this semester." << endl;
+            continue;
+        }
+        cout << "Statistics of course " << (*const_iter)->getName() << ":" << endl;
+        cout << "Students that took part in the exams were " << count << "." << endl;
+        cout << "Success rate: " << (static_cast<double>(countP) / count) * 100 << "%." << endl;
+        cout << "Fail rate: " << 100 - (static_cast<double>(countP) / count) * 100 << "%." << endl;
+        for (int i = 0; i < 11; i++)
+            cout << "Students with grade " << i << " were: " << distribution[i] << "." << endl;
+        cout << "Average grade: " << sum / count << "." << endl;
+    }
+
+    cout << "\nAll-Time Course Statistics:" << endl; 
+
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
         grades = (*const_iter)->getGrades();
         if (grades.size() == 0) {
