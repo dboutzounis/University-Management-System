@@ -34,7 +34,7 @@ Person::Person(string fname, string lname, unsigned int day, unsigned int month,
         cerr << "Error invalid birthdate given." << endl;
         exit(EXIT_FAILURE);
     }
-    
+
     count++;
 }
 

@@ -96,7 +96,6 @@ public:
     // Function that updates the input file based on the changes user made
     void updateFile(const string &path);
 
-
     /* Other Functions */
 
     unsigned int getCourseEcts(const string &courseName) const;

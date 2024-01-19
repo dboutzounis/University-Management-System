@@ -53,6 +53,8 @@ public:
     bool insertStudent(Student *student);
     // Remove Student
     bool removeStudent(const string &id);
+    // Unregister Student
+    bool unregisterStudent(const string &id);
 
     /* Other Functions */
 

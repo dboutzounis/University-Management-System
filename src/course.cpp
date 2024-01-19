@@ -1,9 +1,8 @@
 #include "../include/course.h"
+#include <cmath>
 #include <iostream>
 #include <string>
-#include <cmath>
 using namespace std;
-
 
 // Constructor
 Course::Course() : name(""), ects(0), courseType(false), semester(0) {}
@@ -48,7 +47,7 @@ void Course::print(ostream &str) {
 }
 
 // Output stream operator overloading
-ostream &operator<<(ostream &str, Course &obj) {    
+ostream &operator<<(ostream &str, Course &obj) {
     obj.print(str);
     return str;
 }
@@ -145,7 +144,19 @@ bool Course::insertStudent(Student *student) {
 bool Course::removeStudent(const string &id) {
     if (searchStudent(id)) {
         students.erase(id);
+        grades.erase(id);
         return true;
     }
+    
+    return false;
+}
+
+// Unregister Student
+bool Course::unregisterStudent(const string &id){
+    if (searchStudent(id)) {
+        students.erase(id);
+        return true;
+    }
+    
     return false;
 }

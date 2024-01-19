@@ -1,8 +1,8 @@
 #include "../include/secretary.h"
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <string>
-#include <iomanip>
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -71,7 +71,11 @@ int main(int argc, char *argv[]) {
             switch (submode) {
             case 1:
                 cin >> professor;
-                secretary.insert(professor);
+                id = secretary.insert(professor);
+                if (id.compare("") != 0)
+                    cout << "Professor " << professor.getFname() << " " << professor.getLname() << " was inserted successfully with ID " << id << "." << endl;
+                else
+                    cout << "Professor " << professor.getFname() << " " << professor.getLname() << " could not be inserted." << endl;
                 break;
 
             case 2:
@@ -190,7 +194,10 @@ int main(int argc, char *argv[]) {
             case 3:
                 cout << "Give Professor's ID: ";
                 cin >> id;
-                secretary.remove(id);
+                if (secretary.remove(id))
+                    cout << "Professor with ID " << id << " was removed successfully." << endl;
+                else
+                    cout << "Professor with ID " << id << " could not be removed." << endl;
                 break;
 
             default:
@@ -215,7 +222,11 @@ int main(int argc, char *argv[]) {
             switch (submode) {
             case 1:
                 cin >> student;
-                secretary.insert(student);
+                id = secretary.insert(student);
+                if (id.compare("") != 0)
+                    cout << "Student " << student.getFname() << " " << student.getLname() << " was inserted successfully with ID " << id << "." << endl;
+                else
+                    cout << "Student " << student.getFname() << " " << student.getLname() << " could not be inserted." << endl;
                 break;
 
             case 2:
@@ -325,7 +336,10 @@ int main(int argc, char *argv[]) {
             case 3:
                 cout << "Give Student's ID: ";
                 cin >> id;
-                secretary.remove(id);
+                if (secretary.remove(id))
+                    cout << "Student with ID " << id << " was removed successfully." << endl;
+                else
+                    cout << "Student with ID " << id << " could not be removed." << endl;
                 break;
 
             default:
@@ -350,7 +364,10 @@ int main(int argc, char *argv[]) {
             switch (submode) {
             case 1:
                 cin >> course;
-                secretary.insertCourse(course);
+                if (secretary.insertCourse(course))
+                    cout << "Course " << course.getName() << " was inserted successfully." << endl;
+                else
+                    cout << "Course " << course.getName() << " could not be inserted." << endl;
                 break;
 
             case 2:
@@ -382,7 +399,7 @@ int main(int argc, char *argv[]) {
                     cin >> str;
                     cout << "Give the new Semester: ";
                     cin >> semester;
-                    if (!secretary.transferCourse(str,semester)){
+                    if (!secretary.transferCourse(str, semester)) {
                         cout << "Invalid semester" << endl;
                     }
                     break;
@@ -415,7 +432,10 @@ int main(int argc, char *argv[]) {
             case 3:
                 cout << "Give Course's Name: ";
                 cin >> str;
-                secretary.removeCourse(str);
+                if (secretary.removeCourse(str))
+                    cout << "Course " << str << " was removed successfully." << endl;
+                else
+                    cout << "Course " << str << " could not be removed." << endl;
                 break;
 
             default:
@@ -428,7 +448,10 @@ int main(int argc, char *argv[]) {
             cin >> str;
             cout << "Give the Professor's ID: ";
             cin >> id;
-            secretary.assignCourseToProfessor(str, id);
+            if (secretary.assignCourseToProfessor(str, id))
+                cout << "Course " << str << " assigned to Professor with ID: " << id << endl;
+            else
+                cout << "Could not assign Course " << str << " to Professor with ID: " << id;
             break;
 
         case 5:
@@ -436,7 +459,10 @@ int main(int argc, char *argv[]) {
             cin >> str;
             cout << "Give the Student's ID: ";
             cin >> id;
-            secretary.registerStudentToCourse(str, id);
+            if (secretary.registerStudentToCourse(str, id))
+                cout << "Student with ID " << id << " registered to Course " << str << endl;
+            else
+                cout << "Could not register Student with ID " << id << " to Course " << str << endl;
             break;
 
         case 6:
@@ -461,13 +487,13 @@ int main(int argc, char *argv[]) {
             cout << "Students that can graduate:" << endl;
             secretary.displayGraduates();
             break;
-        
+
         case 10:
             cout << "Give Professor's ID: ";
             cin >> id;
             cout << "Give the Course's name: ";
             cin >> str;
-            secretary.assignGrades(str,id);
+            secretary.assignGrades(str, id);
             break;
 
         case 11:
@@ -475,7 +501,10 @@ int main(int argc, char *argv[]) {
             cin >> id;
             cout << "Give the Course's Name: ";
             cin >> str;
-            secretary.unregisterStudentFromCourse(str,id);
+            if (secretary.unregisterStudentFromCourse(str, id))
+                cout << "Student with ID " << id << " unregistered from Course " << str << endl;
+            else
+                cout << "Could not unregister Student with ID " << id << " from Course " << str << endl;
             break;
 
         case 12:
@@ -483,9 +512,12 @@ int main(int argc, char *argv[]) {
             cin >> id;
             cout << "Give the Course's Name: ";
             cin >> str;
-            secretary.unassignCourseFromProfessor(str,id);
+            if (secretary.unassignCourseFromProfessor(str, id))
+                cout << "Course " << str << " unassigned from Professor with ID " << id << endl;
+            else
+                cout << "Could not unassign Course " << str << " from Professor with ID " << id << endl;
             break;
-        
+
         case 13:
             cout << secretary;
             break;

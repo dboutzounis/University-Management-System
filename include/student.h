@@ -57,6 +57,8 @@ public:
     bool mandatorypassed(int countMandatory);
     // Display Student grades
     void displayGrades();
+    // Unregister from Course
+    bool unregisterCourse(const string &courseName);
 
     /* Other Functions */
 

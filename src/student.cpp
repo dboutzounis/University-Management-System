@@ -42,7 +42,14 @@ Student::~Student() {
 
 // Allocating memory for Student
 Person *Student::create() const {
-    return new Student(*this);
+    Student *newS;
+    try {
+        newS = new Student(*this);
+    } catch (bad_alloc &ba) {
+        cerr << "bad_alloc caught: " << ba.what() << endl;
+        exit(EXIT_FAILURE);
+    }
+    return newS;
 }
 
 // Helper print function for overloading << operator
@@ -144,6 +151,31 @@ bool Student::insertCourse(Course *course) {
 
 // Removing a Course from the vector of Student's Courses
 bool Student::removeCourse(const string &courseName) {
+    bool flag = false;
+    vector<Course *>::iterator iter;
+    for (iter = courses.begin(); iter != courses.end(); ++iter) {
+        if ((*iter)->getName().compare(courseName) == 0) {
+            courses.erase(iter);
+            flag = true;
+            break;
+        }
+    }
+    
+    for (iter = passedCourses.begin(); iter != passedCourses.end(); ++iter) {
+        if ((*iter)->getName().compare(courseName) == 0) {
+            passedCourses.erase(iter);
+            return true;
+        }
+    }
+
+    if (flag) 
+        return true;
+
+    return false;
+}
+
+// Unregister from Course
+bool Student::unregisterCourse(const string &courseName){
     vector<Course *>::iterator iter;
     for (iter = courses.begin(); iter != courses.end(); ++iter) {
         if ((*iter)->getName().compare(courseName) == 0) {
@@ -151,6 +183,7 @@ bool Student::removeCourse(const string &courseName) {
             return true;
         }
     }
+
     return false;
 }
 

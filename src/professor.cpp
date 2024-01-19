@@ -3,6 +3,7 @@
 #include "../include/extrafuncs.h"
 #include <cmath>
 #include <iostream>
+#include <new>
 #include <string>
 using namespace std;
 
@@ -41,7 +42,14 @@ Professor::~Professor() {
 
 // Allocating memory for Professor
 Person *Professor::create() const {
-    return new Professor(*this);
+    Professor *newP;
+    try {
+        newP = new Professor(*this);
+    } catch (bad_alloc &ba) {
+        cerr << "bad_alloc caught: " << ba.what() << endl;
+        exit(EXIT_FAILURE);
+    }
+    return newP;
 }
 
 // Helper print function for overloading << operator
@@ -95,8 +103,6 @@ istream &operator>>(istream &str, Professor &obj) {
     str >> obj.email;
     cout << "Input phone number: ";
     str >> obj.phone;
-    cout << "Input ID: ";
-    str >> obj.id;
     cout << "Input trait: ";
     str >> obj.trait;
     cout << "Input rank: ";
@@ -161,16 +167,16 @@ void Professor::displayStatistics() const {
     vector<Course *>::const_iterator const_iter;
     map<string, double> grades;
     map<string, double>::const_iterator g_iter;
-    
+
     cout << "Statistics of Professor " << lname << " " << fname << endl;
-    cout << "Current Semester Course Statistics:" << endl; 
+    cout << "Current Semester Course Statistics:" << endl;
 
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
         grades = (*const_iter)->getGrades();
         double sum = 0.0;
         int count = 0, countP = 0, distribution[11] = {0};
         for (g_iter = grades.begin(); g_iter != grades.end(); ++g_iter) {
-            if((*const_iter)->searchStudent(g_iter->first)){    
+            if ((*const_iter)->searchStudent(g_iter->first)) {
                 count++;
                 if (g_iter->second >= 5.0)
                     countP++;
@@ -191,7 +197,7 @@ void Professor::displayStatistics() const {
         cout << "Average grade: " << sum / count << "." << endl;
     }
 
-    cout << "\nAll-Time Course Statistics:" << endl; 
+    cout << "\nAll-Time Course Statistics:" << endl;
 
     for (const_iter = courses.begin(); const_iter != courses.end(); ++const_iter) {
         grades = (*const_iter)->getGrades();
