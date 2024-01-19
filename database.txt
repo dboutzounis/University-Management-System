@@ -1,0 +1,61 @@
+Secretary DIT 1115 4 120
+Course Introduction-to-Programming 1 7 Mandatory
+Course Discrete-Math 1 7 Mandatory
+Course Logical-Design-Lab 1 2 Optional
+Course Calculus-1 2 8 Mandatory
+Course Data-Structures 2 7 Mandatory
+Course Applied-Math 2 6 Optional
+Course Calculus-2 3 8 Mandatory
+Course Object-Oriented-Programming 3 8 Mandatory
+Course Algorithms-and-Complexity 4 8 Mandatory
+Course Communication-Networks-Lab-1 4 2 Optional
+Course Design-and-Use-of-Databases 4 7 Mandatory
+Course Artificial-Intelligence-1 5 6 Optional
+Course Operating-Systems 5 8 Mandatory
+Course Numerical-Analysis 5 8 Mandatory
+Course System-Programming 6 8 Mandatory
+Course Compilers 6 6 Mandatory
+Course Internet-Application-Technologies 6 6 Optional
+Course Artificial-Intelligence-2 7 6 Optional
+Course Human-Machine-Communication 7 6 Optional
+Course Algorithmic-Operations-Research 7 6 Optional
+Course Computer-Systems-Protection-and-Security 8 6 Optional
+Course Software-Technology 8 6 Optional
+Course Cryptography 8 6 Optional
+Professor Nikolaos Galis 23 7 1957 M Greek ngalis@di.uoa.gr 6965431369 1115000 DEP Emeritus A10 Algorithmic-Operations-Research
+Professor Dimitrios Giannakopoulos 22 6 1974 M Greek dgiannakopoulos@di.uoa.gr 6908765429 1115001 DEP Professor A70 Operating-Systems
+Professor Harry Vafeias 12 1 1980 M Greek hvafeias@di.uoa.gr 6903425786 1115002 DEP Professor A21 Discrete-Math
+Professor Damian Prosalendis 3 8 1997 M Greek dprosalendis@di.uoa.gr 6987430610 1115003 EDIP Associate A32 Cryptography
+Professor Aristotelis Onasis 15 1 1906 M Greek aonasis@di.uoa.gr 6955321723 1115004 DEP Emeritus A51 Calculus-2
+Professor Constantinos Daskalakis 8 11 1980 M Greek cdaskalakis@di.uoa.gr 6965390152 1115005 DEP Professor A60 Artificial-Intelligence-2
+Professor Jeff Bezos 12 1 1964 M American jbezos@di.uoa.gr 6978654364 1115006 EDIP Professor A28 Logical-Design-Lab
+Professor Bill Gates 28 10 1955 M American bgates@di.uoa.gr 6909324176 1115007 DEP Emeritus A09 Numerical-Analysis
+Professor Elon Musk 28 6 1971 M American emusk@di.uoa.gr 6981764531 1115008 EDIP Professor A54 Human-Machine-Communication
+Professor Donald Trump 14 7 1946 M American dtrump@di.uoa.gr 6908754324 1115009 DEP Emeritus A12 Artificial-Intelligence-1
+Professor Notis Sfakianakis 2 11 1959 M Greek nsfakianakis@di.uoa.gr 6924468905 1115010 DEP Professor A96 Introduction-to-Programming
+Professor Joanne Rowling 31 7 1965 F British jrowling@di.uoa.gr 6998716423 1115011 DEP Assistant A15 Data-Structures
+Professor Oprah Winfrey 29 1 1954 F American owinfrey@di.uoa.gr 6971608832 1115012 DEP Emeritus A26 Applied-Math
+Professor Anne L'Huillier 16 8 1958 F French alhuillier@di.uoa.gr 6974329794 1115013 DEP Professor A11 Object-Oriented-Programming
+Student Theodoros Diamantopoulos 24 12 2000 M Greek tdiamantopoulos@di.uoa.gr 6956430912 1115201800000 9 37 6.432432 2018 Introduction-to-Programming 7.000000 Discrete-Math 6.000000 Data-Structures 5.000000 Calculus-2 7.000000 Algorithms-and-Complexity 7.000000
+Student Vasilis Spanoulis 7 8 2002 M Greek vspanoulis@di.uoa.gr 6938540127 1115202000000 7 53 7.150943 2020 Discrete-Math 5.000000 Data-Structures 7.000000 Object-Oriented-Programming 8.000000 Introduction-to-Programming 9.000000 Calculus-2 7.000000 Algorithms-and-Complexity 8.000000 System-Programming 6.000000
+Student Georgios Printezis 22 2 2002 M Greek gprintezis@di.uoa.gr 6942165435 1115202000001 7 36 8.583333 2020 Introduction-to-Programming 10.000000 Discrete-Math 9.000000 Data-Structures 10.000000 System-Programming 8.000000 Design-and-Use-of-Databases 6.000000
+Student Dimitra Katsafadou 19 3 2002 F Greek dkatsafadou@di.uoa.gr 6955321071 1115202000002 7 37 8.513514 2020 Artificial-Intelligence-1 9.000000 Introduction-to-Programming 10.000000 Discrete-Math 7.000000 Logical-Design-Lab 8.000000 Calculus-1 7.000000 Data-Structures 10.000000
+Student Athanasios Tanimanidis 30 4 2002 M Greek atanimanidis@di.uoa.gr 6907653425 1115202000003 7 37 7.378378 2020 Artificial-Intelligence-1 6.000000 Introduction-to-Programming 8.000000 Discrete-Math 6.000000 Logical-Design-Lab 10.000000 Calculus-1 7.000000 Data-Structures 9.000000
+Student Konstantinos Sloukas 15 1 2003 M Greek ksloukas@di.uoa.gr 6978229014 1115202100000 5 29 7.620690 2021 Applied-Math 6.000000 Calculus-2 7.000000 Object-Oriented-Programming 10.000000 Design-and-Use-of-Databases 7.000000
+Student Eleni Foureira 3 4 2003 F Albanian efoureira@di.uoa.gr 6975660345 1115202100001 5 22 6.318182 2021 Introduction-to-Programming 6.000000 Discrete-Math 7.000000 Object-Oriented-Programming 6.000000
+Student Alexandros Kopsialis 8 10 2003 M Greek akopsialis@di.uoa.gr 6975349015 1115202100002 5 36 5.805556 2021 Introduction-to-Programming 5.000000 Discrete-Math 6.000000 Data-Structures 7.000000 Object-Oriented-Programming 6.000000 Design-and-Use-of-Databases 5.000000
+Student Konstantinos Vasalos 10 1 2003 M Greek kvasalos@di.uoa.gr 6937584301 1115202100003 5 36 7.027778 2021 Introduction-to-Programming 6.000000 Discrete-Math 7.000000 Data-Structures 7.000000 Object-Oriented-Programming 8.000000 Design-and-Use-of-Databases 7.000000
+Student Dimitrios-Nikolaos Boutzounis 5 4 2004 M Greek dboutzounis@di.uoa.gr 6944223660 1115202200000 3 31 9.709677 2022 Introduction-to-Programming 10.000000 Discrete-Math 9.000000 Logical-Design-Lab 9.000000 Calculus-1 10.000000 Data-Structures 10.000000
+Student Spyridon Stavrou 30 11 2004 M Greek sstavrou@di.uoa.gr 6980337420 1115202200001 3 29 9.758621 2022 Introduction-to-Programming 10.000000 Discrete-Math 9.000000 Data-Structures 10.000000 Calculus-1 10.000000
+Student Giannis Antetokounmpo 6 12 2004 M Greek gantetokounmpo@di.uoa.gr 6943879024 1115202200002 3 24 7.458333 2022 Introduction-to-Programming 6.000000 Discrete-Math 7.000000 Logical-Design-Lab 8.000000 Calculus-1 9.000000
+Student Ioannis Papapetrou 30 3 2004 M Greek ipapapetrou@di.uoa.gr 6923560113 1115202200003 3 24 6.000000 2022 Introduction-to-Programming 5.000000 Discrete-Math 5.000000 Logical-Design-Lab 9.000000 Calculus-1 7.000000
+Student Lena Zevgara 24 3 2004 F Greek lzevgara@di.uoa.gr 6987754322 1115202200004 3 31 10.000000 2022 Introduction-to-Programming 10.000000 Discrete-Math 10.000000 Logical-Design-Lab 10.000000 Calculus-1 10.000000 Data-Structures 10.000000
+Student Nikolaos Oikonomopoulos 30 6 2004 M Greek noikonomopoulos@di.uoa.gr 6989546732 1115202200005 3 29 6.965517 2022 Introduction-to-Programming 8.000000 Discrete-Math 7.000000 Calculus-1 6.000000 Data-Structures 7.000000
+Student Chris Kogias 15 2 2004 M Greek ckogias@di.uoa.gr 6978542453 1115202200006 3 29 5.517241 2022 Introduction-to-Programming 5.000000 Discrete-Math 6.000000 Calculus-1 6.000000 Data-Structures 5.000000
+Student Konstantinos Mitoglou 11 6 2005 M Greek kmitoglou@di.uoa.gr 6987341099 1115202300000 1 0 0.000000 2023
+Student Georgios Papagiannis 3 7 2005 M Greek gpapagiannis@di.uoa.gr 6977440298 1115202300001 1 0 0.000000 2023
+Student Giannoulis Larentzakis 22 9 2005 M Greek glaretzakis@i.uoa.gr 6985432610 1115202300002 1 0 0.000000 2023
+Student Ioanna Touni 5 9 2005 F Greek itouni@di.uoa.gr 6961047851 1115202300003 1 0 0.000000 2023
+Student Christina Bompa 13 7 2005 F Greek cbompa@di.uoa.gr 6928158740 1115202300004 1 0 0.000000 2023
+Student Konstantinos Argiros 21 5 2005 M Greek kargiros@di.uoa.gr 6958249613 1115202300005 1 0 0.000000 2023
+Student Dimitris Rizzindor 6 9 2005 M Rizzler drizzindor@di.uoa.gr 6969696969 1115202300006 1 0 0.000000 2023

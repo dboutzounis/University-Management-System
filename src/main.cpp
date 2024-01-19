@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         if (argc != 2)
             throw(1);
     } catch (int n) {
-        cerr << "Usage: ./main <input file>" << endl;
+        cerr << "Usage: ./main <input-file>" << endl;
         exit(EXIT_FAILURE);
     }
 
